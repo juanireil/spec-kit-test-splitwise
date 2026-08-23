@@ -1,0 +1,178 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SplitWise Lite API",
+    "description": "API contract for Iteration 01 (MVP): Expense Entry & Live Balance Sheet",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/members": {
+      "get": {
+        "summary": "List all group members",
+        "operationId": "getMembers",
+        "responses": {
+          "200": {
+            "description": "List of group members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/expenses": {
+      "post": {
+        "summary": "Record a new shared expense",
+        "operationId": "createExpense",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense successfully recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Pydantic validation error"
+          }
+        }
+      },
+      "get": {
+        "summary": "List recorded expenses",
+        "operationId": "getExpenses",
+        "responses": {
+          "200": {
+            "description": "List of all expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/balances": {
+      "get": {
+        "summary": "Retrieve live balance sheet for all members",
+        "operationId": "getBalances",
+        "responses": {
+          "200": {
+            "description": "Current balance summary for each member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BalanceSheetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Member": {
+        "type": "object",
+        "required": ["id", "name"],
+        "properties": {
+          "id": { "type": "string", "example": "alice" },
+          "name": { "type": "string", "example": "Alice" }
+        }
+      },
+      "ExpenseCreate": {
+        "type": "object",
+        "required": ["amount", "payer_id", "participant_ids"],
+        "properties": {
+          "amount": { "type": "number", "format": "decimal", "minimum": 0.01, "example": 90.00 },
+          "payer_id": { "type": "string", "example": "alice" },
+          "participant_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 1,
+            "example": ["alice", "bob", "charlie"]
+          }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "required": ["id", "amount", "payer_id", "participant_ids", "created_at"],
+        "properties": {
+          "id": { "type": "string", "example": "exp-1" },
+          "amount": { "type": "number", "format": "decimal", "example": 90.00 },
+          "payer_id": { "type": "string", "example": "alice" },
+          "participant_ids": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["alice", "bob", "charlie"]
+          },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "MemberBalance": {
+        "type": "object",
+        "required": ["member_id", "member_name", "balance", "status"],
+        "properties": {
+          "member_id": { "type": "string", "example": "alice" },
+          "member_name": { "type": "string", "example": "Alice" },
+          "balance": { "type": "number", "format": "decimal", "example": 60.00 },
+          "status": { "type": "string", "enum": ["owed", "owes", "settled"], "example": "owed" }
+        }
+      },
+      "BalanceSheetResponse": {
+        "type": "object",
+        "required": ["balances", "total_group_expenses"],
+        "properties": {
+          "balances": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MemberBalance" }
+          },
+          "total_group_expenses": { "type": "number", "format": "decimal", "example": 90.00 }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["detail"],
+        "properties": {
+          "detail": { "type": "string", "example": "Invalid member ID in participant list" }
+        }
+      }
+    }
+  }
+}
