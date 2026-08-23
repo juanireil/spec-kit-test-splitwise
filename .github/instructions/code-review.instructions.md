@@ -29,4 +29,4 @@ When reviewing code, always check:
 
 - No unnecessary allocations in hot paths.
 - Database queries are indexed and avoid N+1 patterns.
-- Large collections use streaming or pagination rather than loading every
+- Large collections use streaming or pagination rather than loading everything into memory.
