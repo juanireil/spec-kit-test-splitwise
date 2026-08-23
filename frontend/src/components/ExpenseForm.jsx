@@ -17,11 +17,9 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
   }, [members]);
 
   const toggleParticipant = (id) => {
-    if (participantIds.includes(id)) {
-      setParticipantIds(participantIds.filter((p) => p !== id));
-    } else {
-      setParticipantIds([...participantIds, id]);
-    }
+    setParticipantIds((prev) => (
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
+    ));
   };
 
   const selectAllParticipants = () => {
