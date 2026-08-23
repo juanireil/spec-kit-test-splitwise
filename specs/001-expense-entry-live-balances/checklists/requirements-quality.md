@@ -10,36 +10,36 @@
 
 ## Requirement Completeness
 
-- [ ] CHK001 - Are the mandatory attributes of an expense (amount, payer, participant list) explicitly documented? [Completeness, Spec §FR-001, §FR-002, §FR-003]
-- [ ] CHK002 - Is the pre-populated demo member group roster explicitly defined? [Completeness, Spec §Assumptions, Plan §Technical Context]
-- [ ] CHK003 - Are the HTTP status codes and error payload structures specified for all failure modes? [Completeness, Spec §FR-009, OpenAPI Contract]
-- [ ] CHK004 - Are state requirements documented for initial zero-expense load vs post-expense submission? [Completeness, Spec §User Story 2]
+- [x] CHK001 - Are the mandatory attributes of an expense (amount, payer, participant list) explicitly documented? [Completeness, Spec §FR-001, §FR-002, §FR-003]
+- [x] CHK002 - Is the pre-populated demo member group roster explicitly defined? [Completeness, Spec §Assumptions, Plan §Technical Context]
+- [x] CHK003 - Are the HTTP status codes and error payload structures specified for all failure modes? [Completeness, Spec §FR-009, OpenAPI Contract]
+- [x] CHK004 - Are state requirements documented for initial zero-expense load vs post-expense submission? [Completeness, Spec §User Story 2]
 
 ## Requirement Clarity & Precision
 
-- [ ] CHK005 - Is the balance calculation formula mathematically and unambiguously defined as Total Paid minus Total Owed? [Clarity, Spec §FR-005]
-- [ ] CHK006 - Is the positive/negative/zero balance visual distinction quantified with specific indicators (+, -, settled)? [Clarity, Spec §FR-007]
-- [ ] CHK007 - Is the minimum allowed expense amount specified with numeric precision ($0.01)? [Clarity, Spec §FR-001]
-- [ ] CHK008 - Is equal split division precision specified down to integer cents without floating-point ambiguity? [Clarity, Spec §Edge Cases, Research §3]
+- [x] CHK005 - Is the balance calculation formula mathematically and unambiguously defined as Total Paid minus Total Owed? [Clarity, Spec §FR-005]
+- [x] CHK006 - Is the positive/negative/zero balance visual distinction quantified with specific indicators (+, -, settled)? [Clarity, Spec §FR-007]
+- [x] CHK007 - Is the minimum allowed expense amount specified with numeric precision ($0.01)? [Clarity, Spec §FR-001]
+- [x] CHK008 - Is equal split division precision specified down to integer cents without floating-point ambiguity? [Clarity, Spec §Edge Cases, Research §3]
 
 ## Requirement Consistency
 
-- [ ] CHK009 - Do the participant requirements in User Story 1 align with the OpenAPI contract schema (`minItems: 1`)? [Consistency, Spec §User Story 1, OpenAPI Contract]
-- [ ] CHK010 - Is the zero-sum invariant ($\sum \text{Balances} = 0.00$) consistently enforced across all multi-party split scenarios? [Consistency, Spec §FR-008, §SC-003]
-- [ ] CHK011 - Are the out-of-scope boundaries (no settlements, no unequal splits, no auth) consistently respected across spec and plan? [Consistency, Spec §MVP boundaries, Plan §Scale/Scope]
+- [x] CHK009 - Do the participant requirements in User Story 1 align with the OpenAPI contract schema (`minItems: 1`)? [Consistency, Spec §User Story 1, OpenAPI Contract]
+- [x] CHK010 - Is the zero-sum invariant ($\sum \text{Balances} = 0.00$) consistently enforced across all multi-party split scenarios? [Consistency, Spec §FR-008, §SC-003]
+- [x] CHK011 - Are the out-of-scope boundaries (no settlements, no unequal splits, no auth) consistently respected across spec and plan? [Consistency, Spec §MVP boundaries, Plan §Scale/Scope]
 
 ## Edge Case & Boundary Coverage
 
-- [ ] CHK012 - Does the spec define the exact fractional cent allocation rule when an amount cannot be divided evenly among $N$ participants? [Edge Case, Spec §Edge Cases]
-- [ ] CHK013 - Is system behavior defined when the payer is NOT among the sharing participants? [Edge Case, Spec §User Story 1 Acceptance Scenario 3]
-- [ ] CHK014 - Is system behavior defined when the payer is the SOLE participant in the expense? [Edge Case, Spec §Edge Cases]
-- [ ] CHK015 - Are rejection rules defined for empty participant lists, missing payers, and non-positive amounts? [Edge Case, Spec §FR-009]
+- [x] CHK012 - Does the spec define the exact fractional cent allocation rule when an amount cannot be divided evenly among $N$ participants? [Edge Case, Spec §Edge Cases]
+- [x] CHK013 - Is system behavior defined when the payer is NOT among the sharing participants? [Edge Case, Spec §User Story 1 Acceptance Scenario 3]
+- [x] CHK014 - Is system behavior defined when the payer is the SOLE participant in the expense? [Edge Case, Spec §Edge Cases]
+- [x] CHK015 - Are rejection rules defined for empty participant lists, missing payers, and non-positive amounts? [Edge Case, Spec §FR-009]
 
 ## Acceptance Criteria & Measurability
 
-- [ ] CHK016 - Can the live balance update latency requirement (<500ms) be objectively measured? [Measurability, Spec §SC-002]
-- [ ] CHK017 - Can the task completion speed requirement (<15 seconds) be objectively evaluated in usability testing? [Measurability, Spec §SC-001]
-- [ ] CHK018 - Are test acceptance criteria defined with specific numeric inputs and expected balance outputs for all stories? [Acceptance Criteria, Spec §User Story 1, §User Story 2]
+- [x] CHK016 - Can the live balance update latency requirement (<500ms) be objectively measured? [Measurability, Spec §SC-002]
+- [x] CHK017 - Can the task completion speed requirement (<15 seconds) be objectively evaluated in usability testing? [Measurability, Spec §SC-001]
+- [x] CHK018 - Are test acceptance criteria defined with specific numeric inputs and expected balance outputs for all stories? [Acceptance Criteria, Spec §User Story 1, §User Story 2]
 
 ## Notes
 
