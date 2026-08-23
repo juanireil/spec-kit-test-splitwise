@@ -43,8 +43,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T008 [P] [US2] Build `SettlementGraph` SVG-based component with circular node layout, directed arrows, and amount badges in `frontend/src/components/SettlementGraph.jsx`
-- [ ] T009 [US2] Integrate `SettlementList` and `SettlementGraph` into main dashboard layout with automatic refresh on expense addition in `frontend/src/App.jsx`
+- [x] T008 [P] [US2] Build `SettlementGraph` SVG-based component with circular node layout, directed arrows, and amount badges in `frontend/src/components/SettlementGraph.jsx`
+- [x] T009 [US2] Integrate `SettlementList` and `SettlementGraph` into main dashboard layout with automatic refresh on expense addition in `frontend/src/App.jsx`
 
 **Checkpoint**: All user stories complete. Debt minimization recommendations and visual directed graphs update live with expenses.
 
