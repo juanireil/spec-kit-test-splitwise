@@ -1,17 +1,22 @@
 <!--
 Sync Impact Report:
-- Version change: 1.2.0 -> 1.3.0 (Minor Bump: Dependency Merging & Blocker Resolution Invariant)
+- Version change: 1.3.0 -> 1.4.0 (Minor Bump: Peer Review, Zero-Regression, Defensive Validation, Clean Code Standards)
 - List of modified principles:
-  - PRINCIPLE_5: "V. Spec-Driven Development, Incremental Delivery & Traceability" (Added strict Dependency Merging / Precedent PR Gating rule)
+  - PRINCIPLE_5: "V. Spec-Driven Development, Incremental Delivery & Traceability" (Preserved)
+- Added principles:
+  - PRINCIPLE_8: "VIII. Peer Review & Four-Eyes Verification (NON-NEGOTIABLE)"
+  - PRINCIPLE_9: "IX. Zero-Regression & Backward Contract Compatibility"
+  - PRINCIPLE_10: "X. Defensive Programming & Graceful Error Handling"
+  - PRINCIPLE_11: "XI. Clean Code & Zero-Artifact Cleanliness"
 - Added sections:
-  - Dependency Resolution Gate under Definition of Ready (DoR)
+  - Updated Definition of Done (DoD) with peer review and regression criteria
 - Removed sections:
   - None
 - Follow-up TODOs:
   - None
 -->
 
-# SplitWise Lite Constitution (Project Management Edition)
+# SplitWise Lite Constitution (Project Management & Engineering Excellence Edition)
 
 ## Core Principles
 
@@ -45,6 +50,21 @@ Every business logic endpoint—specifically calculations involving balances, se
 - **Penny Conservation**: The sum of split shares MUST exactly equal the original expense amount ($\sum \text{Shares} = \text{Amount}$).
 - **Settlement Invariant**: The total value of recommended settlements MUST exactly equal total outstanding group debts ($\sum \text{Payments} = \sum \text{Debts}$) with zero self-payments (`Payer != Recipient`).
 
+### VIII. Peer Review & Four-Eyes Verification (NON-NEGOTIABLE)
+No Pull Request may be merged into `main` by its author. Every PR MUST be formally reviewed and approved by at least one peer team member. The reviewer MUST verify:
+1. All automated unit and integration tests pass cleanly with required coverage.
+2. No out-of-scope files, code, or unrequested architectural changes exist.
+3. The branch passes a live manual scenario walkthrough against the user story's acceptance criteria.
+
+### IX. Zero-Regression & Backward Contract Compatibility
+New user stories and feature branches MUST NEVER break, disable, or delete existing unit/integration tests from previous iterations. All legacy test suites must pass 100% on every PR. Any breaking change to existing API contracts (`/contracts/openapi.json`) requires an explicit constitution amendment and stakeholder sign-off.
+
+### X. Defensive Programming & Graceful Error Handling
+All external interfaces (REST endpoints, form inputs) MUST validate data at the perimeter using strict Pydantic schemas and typed request boundaries. The system MUST fail fast with descriptive 4xx client errors (never unhandled 500 internal server errors) and provide user-friendly, actionable feedback in the UI for empty states, invalid participants, or invalid financial inputs.
+
+### XI. Clean Code & Zero-Artifact Cleanliness
+All code merged to `main` MUST be clean of debug artifacts (e.g. temporary `print()` statements, `console.log()`, commented-out legacy code, or unused imports). Build tools (`npm run build`) and linters must execute with zero warnings or errors.
+
 ---
 
 ## Project Management Gates: DoR & DoD
@@ -63,10 +83,12 @@ A User Story / Phase is **READY** for implementation ONLY when:
 A User Story / Phase is **DONE** ONLY when:
 1. 100% of tasks in the story phase are implemented and checked `[x]` in `tasks.md`.
 2. Automated test suite passes with **100% path coverage** on all business logic.
-3. Production build (`npm run build`) compiles cleanly without warnings or errors.
-4. All tasks have atomic commits pushed to the dedicated story branch.
-5. A Pull Request is opened with clear summary descriptions and `closes #<ID>` issue links.
-6. Local application runs cleanly and passes manual scenario walkthrough.
+3. Legacy regression test suite passes 100% with zero broken tests.
+4. Production build (`npm run build`) compiles cleanly without warnings or errors.
+5. All tasks have atomic commits pushed to the dedicated story branch with issue references.
+6. A Pull Request is opened with clear summary descriptions and `closes #<ID>` issue links.
+7. **Four-Eyes Approval**: PR is peer-reviewed and approved by another team member.
+8. Local application runs cleanly and passes manual scenario walkthrough.
 
 ---
 
@@ -83,4 +105,4 @@ A User Story / Phase is **DONE** ONLY when:
 - Any amendment or relaxation of these principles requires documentation, a version bump according to semantic versioning rules, and unanimous stakeholder approval.
 - All PRs, automated agent implementations, and code reviews MUST verify compliance against this document before merging.
 
-**Version**: 1.3.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
+**Version**: 1.4.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
