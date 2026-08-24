@@ -1,6 +1,6 @@
 # Spec-Driven Development (SDD) & Agentic Engineering Guide
 
-This guide describes the complete end-to-end lifecycle for building software with AI coding agents using **Spec-Driven Development (SDD)**.
+This guide describes the complete end-to-end lifecycle for building software with AI coding agents using **Spec-Driven Development (SDD)** in collaborative, multi-developer teams.
 
 ---
 
@@ -60,7 +60,7 @@ In **Spec-Driven Development**, the process is inverted:
 ### 1. `/speckit-constitution`
 - **Purpose**: Defines project-wide engineering laws, architectural constraints, and test gates.
 - **Key Outcome**: Produces `.specify/memory/constitution.md`.
-- **Teaching Point**: AI agents must adhere to strict governance (e.g. 100% path coverage on financial math, single-story branches) rather than making ad-hoc decisions.
+- **Teaching Point**: AI agents must adhere to strict governance (e.g. 100% path coverage on financial math, single-story branches, merge gating) rather than making ad-hoc decisions.
 
 ### 2. `/speckit-specify`
 - **Purpose**: Transforms a product idea into an unambiguous, testable functional specification.
@@ -110,3 +110,61 @@ In **Spec-Driven Development**, the process is inverted:
   - If gaps exist (`missing`, `partial`, `contradicts`, or `unrequested`), it safely **appends** new delta tasks under `## Phase N: Convergence` in `tasks.md` for `/speckit-implement` to complete.
   - If everything is satisfied, it reports **`✅ Converged`** without altering files.
 - **Teaching Point**: **Closing the Feedback Loop & Quality Assurance**. In agentic workflows, partial implementations or subtle requirement omissions can occur. `/speckit-converge` acts as an automated QA audit ensuring zero delta before declaring a release done.
+
+---
+
+## Multi-Team Sprint Execution Playbook (Teams of 6)
+
+In college capstone projects and industry teams, 6 developers working across 6 sprints cannot plan or build a semester's worth of scope in a single monolithic pass. They must use a **Two-Tier Planning Model**:
+
+```text
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                    MACRO LEVEL: PRODUCT BACKLOG                        │
+ │           Lean Inception User Story Map (All 6 Sprints)                │
+ └───────┬──────────────────┬──────────────────┬──────────────────┬───────┘
+         │                  │                  │                  │
+         ▼                  ▼                  ▼                  ▼
+    Sprint 1/2         Sprint 3           Sprint 4           Sprint 5/6
+   Wave 1 (MVP)      Wave 2 (Growth)    Wave 3 (Scale)     Wave 4 (Polish)
+         │
+         ▼
+ ┌────────────────────────────────────────────────────────────────────────┐
+ │                  MICRO LEVEL: SPEC KIT SPRINT LIFECYCLE                │
+ │         /speckit-specify ──► /speckit-plan ──► /speckit-tasks         │
+ │                        (1 Feature per Iteration)                       │
+ └────────────────────────────────────────────────────────────────────────┘
+```
+
+### Sprint Planning Routine:
+1. **Synchronous Alignment (First 30–45 min)**:
+   - Team reviews the Lean Inception Story Map wave.
+   - Slices the sprint goal into 2–3 distinct feature specifications.
+   - Assigns pairs to features:
+     - **Pair 1**: Feature A (`specs/003-...`)
+     - **Pair 2**: Feature B (`specs/004-...`)
+     - **Pair 3**: Feature C (`specs/005-...`)
+2. **Asynchronous Parallel Execution**:
+   - Each pair executes the full Spec Kit cycle on their own dedicated branch.
+3. **Cross-Pair Peer Review (Four-Eyes Principle)**:
+   - Pairs review each other's PRs against Constitution gates before merging to `main`.
+
+---
+
+## Concurrency & Collision Prevention in Multi-Pair Teams
+
+When multiple pairs begin work simultaneously, teams must manage **Story Independence** and **Spec Directory Collision**:
+
+### 1. Vertical Slicing & Contract-First Dependencies
+- **Vertical Domain Slices**: Slices should touch distinct subdomains (e.g. Member Management vs Expense Splitting vs PDF Export) to allow truly parallel work.
+- **Contract-First Mocking**: If Pair B depends on Pair A's backend endpoint, both pairs agree on the OpenAPI contract (`contracts/openapi.json`) during Sprint Planning. Pair B codes against the mock schema while Pair A implements the service, eliminating blocking bottlenecks.
+
+### 2. Preventing Spec Directory Collisions
+If two pairs invoke `/speckit-specify` at the exact same moment from `main`, they might both attempt to create `specs/003-...`. Teams can prevent collisions using two options:
+
+- **Option A: Pre-Allocated Feature Directory (Recommended for PM)**:
+  During Sprint Planning, assign the feature number upfront. Students pass the explicit directory parameter when specifying:
+  ```markdown
+  /speckit-specify SPECIFY_FEATURE_DIRECTORY=specs/003-custom-splits Define the spec for...
+  ```
+- **Option B: Timestamp-Based Numbering**:
+  Configure `.specify/init-options.json` with `"feature_numbering": "timestamp"`. Spec Kit will generate collision-proof directories like `specs/20260824-101500-custom-splits` using unique second-level timestamps.
