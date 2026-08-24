@@ -1,0 +1,56 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SplitWise Lite API - Debt Minimization",
+    "description": "API contract for Iteration 02: Debt Minimization Engine & Visual Graphs",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/api/settlements": {
+      "get": {
+        "summary": "Retrieve minimized settlement payment plan",
+        "operationId": "getSettlements",
+        "responses": {
+          "200": {
+            "description": "List of recommended minimal settlement transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettlementPlanResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SettlementTransaction": {
+        "type": "object",
+        "required": ["from_member_id", "from_member_name", "to_member_id", "to_member_name", "amount"],
+        "properties": {
+          "from_member_id": { "type": "string", "example": "bob" },
+          "from_member_name": { "type": "string", "example": "Bob" },
+          "to_member_id": { "type": "string", "example": "alice" },
+          "to_member_name": { "type": "string", "example": "Alice" },
+          "amount": { "type": "number", "format": "decimal", "example": 5.00 }
+        }
+      },
+      "SettlementPlanResponse": {
+        "type": "object",
+        "required": ["transactions", "total_settled_amount", "transaction_count", "is_settled"],
+        "properties": {
+          "transactions": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SettlementTransaction" }
+          },
+          "total_settled_amount": { "type": "number", "format": "decimal", "example": 10.00 },
+          "transaction_count": { "type": "integer", "example": 2 },
+          "is_settled": { "type": "boolean", "example": false }
+        }
+      }
+    }
+  }
+}
