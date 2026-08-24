@@ -54,6 +54,6 @@
 
 **Purpose**: 100% test coverage verification and documentation updates.
 
-- [ ] T010 [P] Verify 100% path coverage across all backend services using `pytest --cov=backend/src --cov-report=term-missing`
-- [ ] T011 Run end-to-end verification walkthrough following `specs/002-debt-minimization-graphs/quickstart.md`
-- [ ] T012 [P] Update `README.md` with Iteration 02 debt minimization and visual graph capabilities
+- [x] T010 [P] Verify 100% path coverage across all backend services using `pytest --cov=backend/src --cov-report=term-missing`
+- [x] T011 Run end-to-end verification walkthrough following `specs/002-debt-minimization-graphs/quickstart.md`
+- [x] T012 [P] Update `README.md` with Iteration 02 debt minimization and visual graph capabilities
