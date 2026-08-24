@@ -1,13 +1,10 @@
 <!--
 Sync Impact Report:
-- Version change: 1.1.0 -> 1.2.0 (Minor Bump: Project Management Governance, DoR/DoD, Scope Guardrails & Bidirectional Traceability)
+- Version change: 1.2.0 -> 1.3.0 (Minor Bump: Dependency Merging & Blocker Resolution Invariant)
 - List of modified principles:
-  - PRINCIPLE_5: "V. Spec-Driven Development, Incremental Delivery & Git Lifecycle" (Expanded with DoR/DoD and Traceability Matrix rules)
-- Added principles:
-  - PRINCIPLE_6: "VI. Scope Boundary Control & Anti-Gold-Plating"
-  - PRINCIPLE_7: "VII. Non-Functional Requirements (NFR) & Domain Conservation Invariants"
+  - PRINCIPLE_5: "V. Spec-Driven Development, Incremental Delivery & Traceability" (Added strict Dependency Merging / Precedent PR Gating rule)
 - Added sections:
-  - Definition of Ready (DoR) and Definition of Done (DoD) under Quality Gates
+  - Dependency Resolution Gate under Definition of Ready (DoR)
 - Removed sections:
   - None
 - Follow-up TODOs:
@@ -34,6 +31,7 @@ Every business logic endpoint—specifically calculations involving balances, se
 ### V. Spec-Driven Development, Incremental Delivery & Traceability
 - **Single-Story Scope Constraint**: Agents MUST NOT implement an entire multi-story feature in a single pass. Implementation MUST proceed incrementally, delivering exactly **one User Story (or phase)** at a time.
 - **Dedicated Story Branching**: Each User Story / phase MUST be implemented on its own dedicated branch adhering to the convention `feature/issue-<ID>-<name>` or `feature/<phase-or-story-name>`.
+- **Precedent Dependency & Merge Gating (NON-NEGOTIABLE)**: Before creating a new story branch or starting implementation on a dependent User Story, agents/developers MUST verify that all preceding blocking user stories/phases have been **fully reviewed, approved, and merged into `main`**. Developing against unmerged, floating predecessor branches is strictly forbidden to prevent merge drift and orphaned dependencies.
 - **Atomic Commits per Task**: Implementation MUST maintain a 1:1 ratio of commit to task (`- [ ] T###`), creating an atomic commit for each task as it is completed.
 - **Bidirectional Requirements Traceability Matrix (RTM)**: Every commit and PR MUST explicitly reference its corresponding Task ID (`T###`) and GitHub Issue ID (`closes #<ID>`). Unmapped or untracked changes are strictly forbidden.
 - **PR Gate per Increment**: Once all tasks for the current User Story or phase are complete and locally verified, the branch MUST be pushed to the remote and a Pull Request opened before any subsequent User Story or phase may begin.
@@ -53,12 +51,13 @@ Every business logic endpoint—specifically calculations involving balances, se
 
 ### Definition of Ready (DoR)
 A User Story / Phase is **READY** for implementation ONLY when:
-1. `spec.md` is complete with prioritized user stories, acceptance scenarios, and edge cases.
-2. `plan.md`, `data-model.md`, and OpenAPI contracts are defined and verified.
-3. Spec quality checklist (`checklists/requirements.md`) passes with 0 unchecked items.
-4. `tasks.md` contains atomic, dependency-ordered tasks with clear file paths.
-5. GitHub Issues are created and linked to each task.
-6. `/speckit-analyze` confirms 100% requirements-to-tasks coverage with 0 orphan requirements.
+1. **Predecessor Merge Check**: All blocking/precedent User Stories have been merged into `main`, and the local branch is rebased on latest `main`.
+2. `spec.md` is complete with prioritized user stories, acceptance scenarios, and edge cases.
+3. `plan.md`, `data-model.md`, and OpenAPI contracts are defined and verified.
+4. Spec quality checklist (`checklists/requirements.md`) passes with 0 unchecked items.
+5. `tasks.md` contains atomic, dependency-ordered tasks with clear file paths.
+6. GitHub Issues are created and linked to each task.
+7. `/speckit-analyze` confirms 100% requirements-to-tasks coverage with 0 orphan requirements.
 
 ### Definition of Done (DoD)
 A User Story / Phase is **DONE** ONLY when:
@@ -84,4 +83,4 @@ A User Story / Phase is **DONE** ONLY when:
 - Any amendment or relaxation of these principles requires documentation, a version bump according to semantic versioning rules, and unanimous stakeholder approval.
 - All PRs, automated agent implementations, and code reviews MUST verify compliance against this document before merging.
 
-**Version**: 1.2.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
+**Version**: 1.3.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
