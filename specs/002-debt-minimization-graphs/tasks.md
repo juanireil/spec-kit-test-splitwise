@@ -43,8 +43,8 @@
 
 ### Implementation for User Story 2
 
-- [ ] T008 [P] [US2] Build `SettlementGraph` SVG-based component with circular node layout, directed arrows, and amount badges in `frontend/src/components/SettlementGraph.jsx`
-- [ ] T009 [US2] Integrate `SettlementList` and `SettlementGraph` into main dashboard layout with automatic refresh on expense addition in `frontend/src/App.jsx`
+- [x] T008 [P] [US2] Build `SettlementGraph` SVG-based component with circular node layout, directed arrows, and amount badges in `frontend/src/components/SettlementGraph.jsx`
+- [x] T009 [US2] Integrate `SettlementList` and `SettlementGraph` into main dashboard layout with automatic refresh on expense addition in `frontend/src/App.jsx`
 
 **Checkpoint**: All user stories complete. Debt minimization recommendations and visual directed graphs update live with expenses.
 
@@ -54,6 +54,6 @@
 
 **Purpose**: 100% test coverage verification and documentation updates.
 
-- [ ] T010 [P] Verify 100% path coverage across all backend services using `pytest --cov=backend/src --cov-report=term-missing`
-- [ ] T011 Run end-to-end verification walkthrough following `specs/002-debt-minimization-graphs/quickstart.md`
-- [ ] T012 [P] Update `README.md` with Iteration 02 debt minimization and visual graph capabilities
+- [x] T010 [P] Verify 100% path coverage across all backend services using `pytest --cov=backend/src --cov-report=term-missing`
+- [x] T011 Run end-to-end verification walkthrough following `specs/002-debt-minimization-graphs/quickstart.md`
+- [x] T012 [P] Update `README.md` with Iteration 02 debt minimization and visual graph capabilities
