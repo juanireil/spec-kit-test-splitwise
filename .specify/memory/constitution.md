@@ -1,15 +1,10 @@
 <!--
 Sync Impact Report:
-- Version change: 1.3.0 -> 1.4.0 (Minor Bump: Peer Review, Zero-Regression, Defensive Validation, Clean Code Standards)
-- List of modified principles:
-  - PRINCIPLE_5: "V. Spec-Driven Development, Incremental Delivery & Traceability" (Preserved)
+- Version change: 1.4.0 -> 1.5.0 (Minor Bump: Automated CI/CD Pipeline Enforcement & Green Build Gating)
 - Added principles:
-  - PRINCIPLE_8: "VIII. Peer Review & Four-Eyes Verification (NON-NEGOTIABLE)"
-  - PRINCIPLE_9: "IX. Zero-Regression & Backward Contract Compatibility"
-  - PRINCIPLE_10: "X. Defensive Programming & Graceful Error Handling"
-  - PRINCIPLE_11: "XI. Clean Code & Zero-Artifact Cleanliness"
+  - PRINCIPLE_12: "XII. Automated CI/CD Pipelines & Green Build Gating (NON-NEGOTIABLE)"
 - Added sections:
-  - Updated Definition of Done (DoD) with peer review and regression criteria
+  - CI/CD Status Check under Definition of Done (DoD)
 - Removed sections:
   - None
 - Follow-up TODOs:
@@ -65,6 +60,14 @@ All external interfaces (REST endpoints, form inputs) MUST validate data at the 
 ### XI. Clean Code & Zero-Artifact Cleanliness
 All code merged to `main` MUST be clean of debug artifacts (e.g. temporary `print()` statements, `console.log()`, commented-out legacy code, or unused imports). Build tools (`npm run build`) and linters must execute with zero warnings or errors.
 
+### XII. Automated CI/CD Pipelines & Green Build Gating (NON-NEGOTIABLE)
+Every team repository MUST configure an automated CI/CD pipeline (e.g. GitHub Actions, GitLab CI) tailored to their chosen technology stack.
+- **Mandatory Pipeline Checks**: On every push and Pull Request, the CI pipeline MUST automatically execute:
+  1. Full test suite execution with test coverage enforcement.
+  2. Production build compilation and type checks.
+  3. Linter and static analysis checks.
+- **Strict Green Build Gate**: Merging to `main` is strictly forbidden if any CI pipeline check fails ("Red Build"). Merging requires a 100% "Green Build" status.
+
 ---
 
 ## Project Management Gates: DoR & DoD
@@ -87,8 +90,9 @@ A User Story / Phase is **DONE** ONLY when:
 4. Production build (`npm run build`) compiles cleanly without warnings or errors.
 5. All tasks have atomic commits pushed to the dedicated story branch with issue references.
 6. A Pull Request is opened with clear summary descriptions and `closes #<ID>` issue links.
-7. **Four-Eyes Approval**: PR is peer-reviewed and approved by another team member.
-8. Local application runs cleanly and passes manual scenario walkthrough.
+7. **CI/CD Pipeline Status**: All automated CI checks (tests, builds, linters) report **100% Green**.
+8. **Four-Eyes Approval**: PR is peer-reviewed and approved by another team member.
+9. Local application runs cleanly and passes manual scenario walkthrough.
 
 ---
 
@@ -105,4 +109,4 @@ A User Story / Phase is **DONE** ONLY when:
 - Any amendment or relaxation of these principles requires documentation, a version bump according to semantic versioning rules, and unanimous stakeholder approval.
 - All PRs, automated agent implementations, and code reviews MUST verify compliance against this document before merging.
 
-**Version**: 1.4.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
+**Version**: 1.5.0 | **Ratified**: 2026-08-23 | **Last Amended**: 2026-08-23
