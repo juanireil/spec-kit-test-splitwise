@@ -1,32 +1,32 @@
 ---
-applyTo: "**/*.{ts,js,py,go,cs}"
+applyTo: "**/*.{ts,js,py,go,cs,java,rs}"
 ---
 
-# Code Review Standards
+# Code Review Standards (Correctness, Safety & Performance)
 
-When reviewing code, always check:
+When reviewing pull requests, focus strictly on code-level safety, correctness, efficiency, and maintainability:
 
-## Security
+## 1. Correctness & Precision
+- **Data Types & Rounding**: Ensure monetary and precise calculations use exact numeric representations (`Decimal` or integer cents) to prevent IEEE 754 floating-point drift.
+- **Null & Boundary Safety**: Ensure collections, optionals, and null/undefined values are guarded before access. Check for off-by-one errors in slices, pagination, and loops.
+- **Pure Logic & Immutability**: Ensure domain calculations do not produce unintended side-effects or mutate inputs in-place unless explicitly designed.
 
-- No hardcoded secrets, tokens, or connection strings.
-- All user input is validated and sanitised before use.
-- SQL queries use parameterised statements.
-- No sensitive data logged at INFO level or above.
+## 2. Security & Defensive Code
+- **Secrets & Credentials**: Flag any hardcoded tokens, passwords, keys, or sensitive connection strings.
+- **Input Validation**: All external parameters, payload bodies, and query arguments must be validated and sanitized at the entrypoint.
+- **Injection Safety**: SQL/database queries must use parameterized builders; shell executions must avoid unsanitized string interpolation.
+- **Log Hygiene**: Ensure no PII, tokens, or sensitive payload data are logged.
 
-## Reliability
+## 3. Reliability & Exception Handling
+- **Specific Exception Handling**: Never use bare `except:` or empty catch blocks that swallow errors silently.
+- **Resource Lifecycle**: Ensure file handles, connections, and locks are safely released using context managers (`with`, `try-finally`, `using`).
+- **Concurrency & State**: Flag race conditions when shared mutable state or in-memory stores are accessed across concurrent threads or async handlers.
 
-- All async operations have proper error handling.
-- Network calls include timeouts and retry logic.
-- Resource cleanup is handled in finally blocks or using statements.
+## 4. Algorithmic Efficiency & Performance
+- **Time Complexity**: Flag unnecessary nested loops ($O(N^2)$) where lookup maps/sets ($O(1)$) or greedy single-pass algorithms can be used.
+- **Database & Query Efficiency**: Flag N+1 query patterns, unindexed filters, or queries loading full datasets into memory when streaming or pagination applies.
+- **Hot-Path Allocations**: Avoid redundant object allocations, cloning, or heavy JSON re-parsing inside tight loops.
 
-## Maintainability
-
-- Functions do one thing and are under 40 lines where practical.
-- Variable names are descriptive and follow project conventions.
-- No commented-out code left in place. Use version control instead.
-
-## Performance
-
-- No unnecessary allocations in hot paths.
-- Database queries are indexed and avoid N+1 patterns.
-- Large collections use streaming or pagination rather than loading everything into memory.
+## 5. Code Maintainability
+- **Single Responsibility**: Functions should have one clear purpose and avoid sprawling multi-page bodies.
+- **No Dead Code**: Flag commented-out code blocks, leftover debug statements (`console.log`, `print`), or unused variables.
