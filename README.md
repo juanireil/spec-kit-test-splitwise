@@ -16,23 +16,28 @@ For instructors, teaching assistants, and students, refer to these dedicated doc
 
 2. **🎓 [60-Minute Class & Live Demo Guide](CLASS_LESSON_PLAN.md)**:
    - Complete 60-minute practical lesson roadmap with timing breakdowns.
-   - **10 Core Spec Kit Commands Reference** with copy-pasteable prompt examples and DO/DON'T rules.
+   - **10 Core Spec Kit Commands Reference** with prompt examples and DO/DON'T rules.
    - **3 Golden Rules** & **4 Anti-Patterns** of Agentic Pair Programming.
    - Step-by-step live demo script (Specifying, Planning, TDD Implementation, PR Review, and Green CI/CD Gating).
    - In-depth appendix on **Spec Kit Presets** and **Extensions** (`assess` & `bug`).
 
-3. **🏃 [Multi-Team Sprint Playbook](SPRINT_PLAYBOOK.md)**:
+3. **📋 [Class Live Demo Prompts](CLASS_PROMPTS.md)**:
+   - Ready-to-copy prompts for the live class demonstration (Unequal / Custom Expense Splits).
+
+4. **🏃 [Multi-Team Sprint Playbook](SPRINT_PLAYBOOK.md)**:
    - How to bridge **Lean Inception User Story Maps** into actionable feature specifications (`/speckit-specify`).
    - Sprint routine for **teams of 6 developers** running 3 parallel pairs.
    - Vertical domain slicing, OpenAPI contract mocking, and directory collision prevention.
    - Student Pull Request governance checklist.
 
-4. **📜 [Project Constitution](.specify/memory/constitution.md)**:
+5. **📜 [Project Constitution](.specify/memory/constitution.md)**:
    - Non-negotiable engineering principles, mathematical conservation invariants, and formal Definition of Ready (DoR) and Definition of Done (DoD) quality gates.
 
 ---
 
-## Architecture & Features Built
+## Architecture & Features Roadmap
+
+### 📦 Implemented Iterations (Baseline)
 
 - **Iteration 01 (MVP) - Expense Tracking & Live Balances**:
   - Record shared expenses with equal splitting and exact fractional cent distribution.
@@ -43,6 +48,31 @@ For instructors, teaching assistants, and students, refer to these dedicated doc
   - Greedy settlement minimization algorithm reducing debts to at most $N - 1$ direct transactions.
   - Interactive SVG-based directed graph rendering nodes (debtors in red, creditors in green) and payment arrows with exact dollar badges.
   - Real-time automatic recalculation and graph re-rendering upon expense creation.
+
+---
+
+### 🎯 Live Class Demo Target (Iteration 03)
+
+- **Iteration 03 - Unequal / Custom Expense Splits (Exact Amounts & Percentages)**:
+  - Supports 3 split modes: **Equal**, **Exact Amounts** ($), and **Percentages** (%).
+  - Enforces strict mathematical invariants: $\sum \text{Shares} \equiv \text{Expense Total}$ with deterministic fractional-cent remainder distribution.
+  - Real-time interactive split validation and dynamic remainder calculation on both client and server.
+
+---
+
+### 🚀 Future Sprint Ideas & Extensions (For Student Projects)
+
+To explore further iterations during course sprints, student teams can tackle:
+
+1. **Category Tagging & Spending Breakdown**:
+   - Tag expenses with visual categories (Food, Transport, Entertainment, Utilities).
+   - Category filtering pills and dynamic percentage spending breakdown progress bars.
+2. **Direct Debt "Settle Up" & Payment Recording**:
+   - Interactive payment execution directly from graph edges to record partial or full debt payoffs.
+3. **Multi-Currency Support & Live FX Conversion**:
+   - Record expenses in foreign currencies with deterministic exchange rate conversions.
+4. **Activity Search, Date Filtering & CSV/JSON Export**:
+   - Search by keyword, date-range filters, and downloadable financial audit reports.
 
 ---
 
