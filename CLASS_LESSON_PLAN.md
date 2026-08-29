@@ -259,30 +259,41 @@ Run:
 
 ---
 
-### Step 4: `/speckit-tasks` & `/speckit-analyze` (4 min)
+### Step 4: `/speckit-tasks` (3 min)
 Run:
 ```text
 /speckit-tasks
+```
+**Key Teaching Point**: Show `tasks.md` with structured, atomic tasks mapped 1:1 to User Stories (`- [ ] T001 [P] [US1]...`).
+
+---
+
+### Step 5: `/speckit-taskstoissues` & `/speckit-analyze` (3 min)
+Run:
+```text
+/speckit-taskstoissues
 /speckit-analyze
 ```
-**Key Teaching Point**: Show `tasks.md` with structured tasks mapped 1:1 to User Stories, and show `/speckit-analyze` confirming the **Definition of Ready (DoR)**.
+**Key Teaching Point**: 
+- **Automated Issue Sync**: Show how `/speckit-taskstoissues` interacts with the **GitHub MCP Server** to automatically create real, tracked GitHub Issues for each task in `tasks.md` without any manual typing.
+- **Definition of Ready (DoR)**: Show `/speckit-analyze` verifying 100% bidirectional requirements-to-tasks coverage before code generation begins.
 
 ---
 
 ## Part 4: Live Demo — Implementation & CI/CD Gating (15 Minutes)
 
-### Step 5: `/speckit-implement` (8 min)
+### Step 6: `/speckit-implement` (8 min)
 Run:
 ```text
 /speckit-implement
 ```
 **What to highlight during execution**:
-1. Dedicated story branch checkout.
+1. Dedicated story branch checkout (`feature/issue-XX-us1-custom-splits`).
 2. Writing tests first (TDD).
-3. Atomic 1:1 commits per task (`T001`, `T002`).
+3. Atomic 1:1 commits per task referencing the issue (`T001: closes #XX`).
 4. Automatic push and Pull Request creation.
 
-### Step 6: The GitHub PR, CI/CD Green Gate & Live App (7 min)
+### Step 7: The GitHub PR, CI/CD Green Gate & Live App (7 min)
 Switch to the GitHub browser tab:
 1. Open the newly created **Pull Request**.
 2. Point out:

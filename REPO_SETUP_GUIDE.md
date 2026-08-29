@@ -1,6 +1,6 @@
 # Repository Setup, GitHub Governance & Spec Kit Quickstart
 
-This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **System Prerequisites**, **Antigravity CLI**, **GitHub MCP Server**, **Spec Kit installation**, **Automated CI/CD Pipelines**, **Branch Protection Rules**, and **Copilot Code Reviews**.
+This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **System Prerequisites**, **Antigravity CLI**, **GitHub MCP Server**, **GitHub Projects Board**, **Spec Kit installation**, **Automated CI/CD Pipelines**, **Branch Protection Rules**, and **Copilot Code Reviews**.
 
 ---
 
@@ -46,7 +46,7 @@ agy --help
 ### Adding the GitHub MCP Server
 To allow Antigravity to create issues, query pull requests, search commits, and manage the repository using GitHub's Model Context Protocol (MCP):
 
-1. Generate a **GitHub Personal Access Token (Classic or Fine-grained)** with `repo` permissions:
+1. Generate a **GitHub Personal Access Token (Classic or Fine-grained)** with `repo` and `project` permissions:
    - GitHub $\rightarrow$ **Settings** $\rightarrow$ **Developer Settings** $\rightarrow$ **Personal Access Tokens**.
 2. Run the `agy mcp add` command:
    ```bash
@@ -63,7 +63,20 @@ To allow Antigravity to create issues, query pull requests, search commits, and 
 
 ---
 
-## 3. Spec Kit Installation & Project Initialization
+## 3. Creating a GitHub Project & Board for Issue Tracking
+
+To visually track sprint backlog items and tasks synchronized by `/speckit-taskstoissues`:
+
+1. Navigate to **Projects** tab in your GitHub repository:
+   - `https://github.com/<owner>/<repo>/projects`
+2. Click **"New Project"** and select the **"Board"** template (or **"Team backlog"**).
+3. Name the project (e.g. `SplitWise Lite - Sprint Backlog`).
+4. Configure columns: `Todo`, `In Progress`, `In Review`, `Done`.
+5. *(Optional automation)*: In Project settings, enable auto-add workflows so newly created issues in the repository automatically land in the `Todo` column.
+
+---
+
+## 4. Spec Kit Installation & Project Initialization
 
 [Spec Kit](https://github.com/github/spec-kit) is an open-source framework by GitHub for Spec-Driven Development (SDD).
 
@@ -92,7 +105,7 @@ specify init .
 
 ---
 
-## 4. Git Hooks & Extension Configuration (`.specify/extensions.yml`)
+## 5. Git Hooks & Extension Configuration (`.specify/extensions.yml`)
 
 Ensure that the Git lifecycle hook extension is enabled so that feature branches and commits are created automatically by Spec Kit:
 
@@ -118,7 +131,7 @@ hooks:
 
 ---
 
-## 5. Automated CI/CD Pipeline Setup (`.github/workflows/ci.yml`)
+## 6. Automated CI/CD Pipeline Setup (`.github/workflows/ci.yml`)
 
 To satisfy **Constitution Principle XII** (Automated CI/CD & Green Build Gating), create a `.github/workflows/ci.yml` file in your repository:
 
@@ -187,7 +200,7 @@ jobs:
 
 ---
 
-## 6. Hard-Blocking Direct Pushes to `main` (Branch Protection)
+## 7. Hard-Blocking Direct Pushes to `main` (Branch Protection)
 
 To enforce **Constitution Principle V & XII** (all code must flow through dedicated story branches and PRs):
 
@@ -210,7 +223,7 @@ To enforce **Constitution Principle V & XII** (all code must flow through dedica
 
 ---
 
-## 7. Configuring GitHub Copilot Code Reviews on PRs
+## 8. Configuring GitHub Copilot Code Reviews on PRs
 
 Configure automated code reviews focused strictly on code correctness, safety, and efficiency:
 
@@ -240,15 +253,15 @@ When reviewing pull requests, focus strictly on code-level safety, correctness, 
 
 ---
 
-## 8. Complete End-to-End Student Workflow
+## 9. Complete End-to-End Student Workflow
 
 ```text
  1. Prerequisites:    Python 3.10+ + uv + Node.js (v18+) + npx + git
- 2. Tooling Setup:    Install agy CLI + Add GitHub MCP server + Install specify-cli
+ 2. Tooling Setup:    Install agy CLI + Add GitHub MCP server + Create GitHub Project Board
  3. Project Init:     specify init .
  4. Ratify Rules:     /speckit-constitution
  5. Specify & Plan:   /speckit-specify -> /speckit-clarify -> /speckit-plan -> /speckit-tasks
- 6. Issue Sync:       /speckit-taskstoissues (via GitHub MCP)
+ 6. Issue Sync:       /speckit-taskstoissues (via GitHub MCP onto Project Board)
  7. Implement:        /speckit-implement (1 story branch at a time, atomic commits)
  8. Review & Merge:   Copilot & Peer Review -> Green CI/CD Status Checks -> Merge to main
  9. QA Audit:         /speckit-converge
