@@ -1,6 +1,6 @@
 # Repository Setup, GitHub Governance & Spec Kit Quickstart
 
-This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **System Prerequisites**, **Antigravity CLI**, **GitHub MCP Server**, **Spec Kit installation**, **branch protection rules**, and **Copilot automated code reviews**.
+This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **System Prerequisites**, **Antigravity CLI**, **GitHub MCP Server**, **Spec Kit installation**, **Automated CI/CD Pipelines**, **Branch Protection Rules**, and **Copilot Code Reviews**.
 
 ---
 
@@ -118,7 +118,76 @@ hooks:
 
 ---
 
-## 5. Hard-Blocking Direct Pushes to `main` (Branch Protection)
+## 5. Automated CI/CD Pipeline Setup (`.github/workflows/ci.yml`)
+
+To satisfy **Constitution Principle XII** (Automated CI/CD & Green Build Gating), create a `.github/workflows/ci.yml` file in your repository:
+
+```yaml
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-checks:
+    name: Backend Lint & Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+          pip install ruff
+
+      - name: Run Ruff Linter
+        run: |
+          ruff check backend
+
+      - name: Run Pytest Suite with Coverage
+        env:
+          PYTHONPATH: .
+        run: |
+          python -m pytest backend/tests --cov=backend/src --cov-report=term-missing --cov-fail-under=90
+
+  frontend-checks:
+    name: Frontend Build & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Verify Production Build
+        working-directory: frontend
+        run: npm run build
+```
+
+> **CI Best Practice**: Use `npm install` (instead of `npm ci`) in workflows if student teams use different minor versions of Node/npm across their personal laptops to avoid lockfile version mismatch failures.
+
+---
+
+## 6. Hard-Blocking Direct Pushes to `main` (Branch Protection)
 
 To enforce **Constitution Principle V & XII** (all code must flow through dedicated story branches and PRs):
 
@@ -130,8 +199,10 @@ To enforce **Constitution Principle V & XII** (all code must flow through dedica
    - ✅ **Require a pull request before merging**:
      - Check **Require approvals** and set count to `1` (enforces Principle VIII: Four-Eyes Review).
      - Check **Dismiss stale pull request approvals when new commits are pushed**.
-   - ✅ **Require status checks to pass before merging** (enforces CI/CD Green Build).
-   - ✅ **Do not allow bypassing the above settings** *(CRITICAL: This prevents repository admins and owners from accidentally bypassing the rule via git push)*.
+   - ✅ **Require status checks to pass before merging**:
+     - Check **Require branches to be up to date before merging**.
+     - Search and add status checks: `Backend Lint & Tests` and `Frontend Build & Type Check`.
+   - ✅ **Do not allow bypassing the above settings** *(CRITICAL: Prevents repository admins and owners from accidentally bypassing the rule via direct git push)*.
    - ✅ **Block force pushes** & **Block branch deletions**.
 5. Click **"Save changes"** / **"Create"**.
 
@@ -139,7 +210,7 @@ To enforce **Constitution Principle V & XII** (all code must flow through dedica
 
 ---
 
-## 6. Configuring GitHub Copilot Code Reviews on PRs
+## 7. Configuring GitHub Copilot Code Reviews on PRs
 
 Configure automated code reviews focused strictly on code correctness, safety, and efficiency:
 
@@ -169,7 +240,7 @@ When reviewing pull requests, focus strictly on code-level safety, correctness, 
 
 ---
 
-## 7. Complete End-to-End Student Workflow
+## 8. Complete End-to-End Student Workflow
 
 ```text
  1. Prerequisites:    Python 3.10+ + uv + Node.js (v18+) + npx + git
@@ -179,6 +250,6 @@ When reviewing pull requests, focus strictly on code-level safety, correctness, 
  5. Specify & Plan:   /speckit-specify -> /speckit-clarify -> /speckit-plan -> /speckit-tasks
  6. Issue Sync:       /speckit-taskstoissues (via GitHub MCP)
  7. Implement:        /speckit-implement (1 story branch at a time, atomic commits)
- 8. Review & Merge:   Copilot & Peer Review -> Green CI/CD -> Merge to main
+ 8. Review & Merge:   Copilot & Peer Review -> Green CI/CD Status Checks -> Merge to main
  9. QA Audit:         /speckit-converge
 ```
