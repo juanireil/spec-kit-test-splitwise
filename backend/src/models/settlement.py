@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import List
+
 from pydantic import BaseModel, Field
 
 
@@ -12,7 +12,7 @@ class SettlementTransaction(BaseModel):
 
 
 class SettlementPlanResponse(BaseModel):
-    transactions: List[SettlementTransaction]
+    transactions: list[SettlementTransaction]
     total_settled_amount: Decimal
     transaction_count: int
     is_settled: bool

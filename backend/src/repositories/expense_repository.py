@@ -1,16 +1,16 @@
 import threading
-from datetime import datetime, timezone
 import uuid
-from typing import Dict, List, Optional
-from backend.src.models.member import Member
+from datetime import datetime, timezone
+
 from backend.src.models.expense import Expense, ExpenseCreate
+from backend.src.models.member import Member
 
 
 class InMemoryExpenseRepository:
     def __init__(self) -> None:
         self._lock = threading.Lock()
-        self._members: Dict[str, Member] = {}
-        self._expenses: List[Expense] = []
+        self._members: dict[str, Member] = {}
+        self._expenses: list[Expense] = []
         self._seed_default_members()
 
     def _seed_default_members(self) -> None:
@@ -23,11 +23,11 @@ class InMemoryExpenseRepository:
         for m in default_members:
             self._members[m.id] = m
 
-    def get_members(self) -> List[Member]:
+    def get_members(self) -> list[Member]:
         with self._lock:
             return list(self._members.values())
 
-    def get_member_by_id(self, member_id: str) -> Optional[Member]:
+    def get_member_by_id(self, member_id: str) -> Member | None:
         with self._lock:
             return self._members.get(member_id)
 
@@ -43,7 +43,7 @@ class InMemoryExpenseRepository:
             self._expenses.append(expense)
             return expense
 
-    def get_expenses(self) -> List[Expense]:
+    def get_expenses(self) -> list[Expense]:
         with self._lock:
             return list(self._expenses)
 

@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 from backend.src.models.member import MemberBalance
 from backend.src.services.debt_service import DebtSimplificationService
 

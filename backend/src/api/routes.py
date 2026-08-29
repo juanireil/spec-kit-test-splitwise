@@ -1,7 +1,8 @@
-from typing import List
+
 from fastapi import APIRouter, HTTPException, status
-from backend.src.models.member import Member, BalanceSheetResponse
+
 from backend.src.models.expense import Expense, ExpenseCreate
+from backend.src.models.member import BalanceSheetResponse, Member
 from backend.src.models.settlement import SettlementPlanResponse
 from backend.src.repositories.expense_repository import repository
 from backend.src.services.balance_service import BalanceService
@@ -10,7 +11,7 @@ from backend.src.services.debt_service import DebtSimplificationService
 router = APIRouter()
 
 
-@router.get("/members", response_model=List[Member], summary="List group members")
+@router.get("/members", response_model=list[Member], summary="List group members")
 def get_members():
     return repository.get_members()
 
@@ -35,7 +36,7 @@ def create_expense(expense_in: ExpenseCreate):
     return repository.add_expense(expense_in)
 
 
-@router.get("/expenses", response_model=List[Expense], summary="List all recorded expenses")
+@router.get("/expenses", response_model=list[Expense], summary="List all recorded expenses")
 def get_expenses():
     return repository.get_expenses()
 
