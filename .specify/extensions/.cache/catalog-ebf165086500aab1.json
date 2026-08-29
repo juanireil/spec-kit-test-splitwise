@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "updated_at": "2026-08-21T00:00:00Z",
+  "updated_at": "2026-08-28T21:15:58Z",
   "catalog_url": "https://raw.githubusercontent.com/github/spec-kit/main/extensions/catalog.community.json",
   "extensions": {
     "adrkit": {
@@ -220,6 +220,57 @@
       "stars": 0,
       "created_at": "2026-08-18T00:00:00Z",
       "updated_at": "2026-08-18T00:00:00Z"
+    },
+    "agentdocx-speckitv2": {
+      "name": "AgentDocx SpecKit V2",
+      "id": "agentdocx-speckitv2",
+      "description": "AgentDocx evolved: same pipeline + far more autonomous Ticket Manager (5 CLI, per-project Kanban, bulk sync, auto-switch, Auditor).",
+      "author": "ahmed200346",
+      "version": "0.0.7",
+      "download_url": "https://github.com/ahmed200346/Extension_GithubSpecKit/archive/refs/tags/v0.0.7.zip",
+      "repository": "https://github.com/ahmed200346/Extension_GithubSpecKit",
+      "homepage": "https://github.com/ahmed200346/Extension_GithubSpecKit",
+      "documentation": "https://github.com/ahmed200346/Extension_GithubSpecKit/blob/main/README.md",
+      "changelog": "https://github.com/ahmed200346/Extension_GithubSpecKit/blob/main/agentdocx-speckit/CHANGELOG.md",
+      "license": "MIT",
+      "category": "integration",
+      "effect": "read-write",
+      "requires": {
+        "speckit_version": ">=0.1.0",
+        "tools": [
+          {
+            "name": "python",
+            "version": ">=3.10",
+            "required": true
+          },
+          {
+            "name": "node",
+            "version": ">=18",
+            "required": true
+          },
+          {
+            "name": "postgresql",
+            "version": ">=12",
+            "required": true
+          }
+        ]
+      },
+      "provides": {
+        "commands": 0,
+        "hooks": 0
+      },
+      "tags": [
+        "integration",
+        "kanban",
+        "ticket-management",
+        "vscode-extension",
+        "multi-agent"
+      ],
+      "verified": false,
+      "downloads": 0,
+      "stars": 0,
+      "created_at": "2026-08-28T00:00:00Z",
+      "updated_at": "2026-08-28T00:00:00Z"
     },
     "analytics": {
       "name": "Analytics",
@@ -456,8 +507,8 @@
       "id": "archive",
       "description": "Archive merged features into main project memory, resolving gaps and conflicts.",
       "author": "Stanislav Deviatov",
-      "version": "1.2.2",
-      "download_url": "https://github.com/stn1slv/spec-kit-archive/archive/refs/tags/v1.2.2.zip",
+      "version": "1.3.0",
+      "download_url": "https://github.com/stn1slv/spec-kit-archive/archive/refs/tags/v1.3.0.zip",
       "repository": "https://github.com/stn1slv/spec-kit-archive",
       "homepage": "https://github.com/stn1slv/spec-kit-archive",
       "documentation": "https://github.com/stn1slv/spec-kit-archive/blob/main/README.md",
@@ -466,7 +517,7 @@
       "category": "docs",
       "effect": "read-write",
       "requires": {
-        "speckit_version": ">=0.1.0"
+        "speckit_version": ">=0.14.0"
       },
       "provides": {
         "commands": 1,
@@ -482,7 +533,7 @@
       "downloads": 0,
       "stars": 0,
       "created_at": "2026-03-14T00:00:00Z",
-      "updated_at": "2026-08-11T00:00:00Z"
+      "updated_at": "2026-08-24T00:00:00Z"
     },
     "ascii-diagram": {
       "name": "ASCII Diagram Renderer",
@@ -605,15 +656,15 @@
       "updated_at": "2026-03-03T00:00:00Z"
     },
     "bdd": {
-      "name": "Spec-Kit BDD",
+      "name": "BDD",
       "id": "bdd",
-      "description": "ATDD/BDD extension: convert specs to Gherkin scenarios, scaffold step definitions, and verify acceptance test coverage.",
+      "description": "Convert specs to Gherkin scenarios, scaffold step definitions, and verify acceptance test coverage.",
       "author": "RSginer",
-      "version": "1.0.2",
-      "download_url": "https://github.com/RSginer/spec-kit-bdd/archive/refs/tags/v1.0.2.zip",
+      "version": "1.0.3",
+      "download_url": "https://github.com/RSginer/spec-kit-bdd/archive/refs/tags/v1.0.3.zip",
       "repository": "https://github.com/RSginer/spec-kit-bdd",
-      "homepage": "https://github.com/RSginer/spec-kit-bdd",
-      "documentation": "https://github.com/RSginer/spec-kit-bdd/blob/main/docs/usage.md",
+      "homepage": "https://rsginer.github.io/spec-kit-bdd/",
+      "documentation": "https://rsginer.github.io/spec-kit-bdd/",
       "changelog": "https://github.com/RSginer/spec-kit-bdd/releases",
       "license": "MIT",
       "category": "process",
@@ -662,7 +713,7 @@
       "downloads": 0,
       "stars": 0,
       "created_at": "2026-07-15T00:00:00Z",
-      "updated_at": "2026-07-15T00:00:00Z"
+      "updated_at": "2026-08-24T00:00:00Z"
     },
     "blueprint": {
       "name": "Blueprint",
@@ -2099,10 +2150,10 @@
     "grill": {
       "name": "SpecKit Grill Me",
       "id": "grill",
-      "description": "Exhaustively resolve specification ambiguities and decisions before planning.",
+      "description": "Exhaustively clarify specifications and optionally sync canonical domain knowledge.",
       "author": "yoshi1220",
-      "version": "1.0.0",
-      "download_url": "https://github.com/yoshi1220/speckit-grill-me/releases/download/v1.0.0/speckit-grill-me-extension-v1.0.0.zip",
+      "version": "1.0.1",
+      "download_url": "https://github.com/yoshi1220/speckit-grill-me/releases/download/v1.0.1/speckit-grill-me-extension-v1.0.1.zip",
       "repository": "https://github.com/yoshi1220/speckit-grill-me",
       "homepage": "https://github.com/yoshi1220/speckit-grill-me/tree/main/spec-kit-extension",
       "documentation": "https://github.com/yoshi1220/speckit-grill-me/blob/main/spec-kit-extension/README.md",
@@ -2120,7 +2171,7 @@
         ]
       },
       "provides": {
-        "commands": 1,
+        "commands": 2,
         "hooks": 0
       },
       "tags": [
@@ -2134,7 +2185,7 @@
       "downloads": 0,
       "stars": 0,
       "created_at": "2026-08-11T00:00:00Z",
-      "updated_at": "2026-08-11T00:00:00Z"
+      "updated_at": "2026-08-25T00:00:00Z"
     },
     "harness": {
       "name": "Research Harness",
@@ -3596,6 +3647,40 @@
       "created_at": "2026-03-18T00:00:00Z",
       "updated_at": "2026-03-18T00:00:00Z"
     },
+    "prespec": {
+      "name": "Pre-Spec Cards",
+      "id": "prespec",
+      "description": "Card-based pre-spec thinking: paste an idea, get your card plus the paths you'd miss, then play each through \u2014 story, snags, trade-offs, difficulty vs payoff \u2014 before /speckit.specify.",
+      "author": "bendlikeabamboo",
+      "version": "0.3.0",
+      "download_url": "https://github.com/bendlikeabamboo/pre-spec/archive/refs/tags/v0.3.0.zip",
+      "repository": "https://github.com/bendlikeabamboo/pre-spec",
+      "homepage": "https://github.com/bendlikeabamboo/pre-spec",
+      "documentation": "https://github.com/bendlikeabamboo/pre-spec#readme",
+      "changelog": "https://github.com/bendlikeabamboo/pre-spec/releases",
+      "license": "MIT",
+      "category": "process",
+      "effect": "read-write",
+      "requires": {
+        "speckit_version": ">=0.9.0"
+      },
+      "provides": {
+        "commands": 2,
+        "hooks": 0
+      },
+      "tags": [
+        "discovery",
+        "ideation",
+        "decision-cards",
+        "product",
+        "workflow"
+      ],
+      "verified": false,
+      "downloads": 0,
+      "stars": 0,
+      "created_at": "2026-08-28T00:00:00Z",
+      "updated_at": "2026-08-28T00:00:00Z"
+    },
     "preview": {
       "name": "Spec Kit Preview",
       "id": "preview",
@@ -3832,8 +3917,8 @@
       "id": "reconcile",
       "description": "Reconcile implementation drift by surgically updating the feature's own spec, plan, and tasks.",
       "author": "Stanislav Deviatov",
-      "version": "1.1.0",
-      "download_url": "https://github.com/stn1slv/spec-kit-reconcile/archive/refs/tags/v1.1.0.zip",
+      "version": "1.2.1",
+      "download_url": "https://github.com/stn1slv/spec-kit-reconcile/archive/refs/tags/v1.2.1.zip",
       "repository": "https://github.com/stn1slv/spec-kit-reconcile",
       "homepage": "https://github.com/stn1slv/spec-kit-reconcile",
       "documentation": "https://github.com/stn1slv/spec-kit-reconcile/blob/main/README.md",
@@ -3842,11 +3927,11 @@
       "category": "docs",
       "effect": "read-write",
       "requires": {
-        "speckit_version": ">=0.1.0"
+        "speckit_version": ">=0.16.2"
       },
       "provides": {
         "commands": 1,
-        "hooks": 0
+        "hooks": 2
       },
       "tags": [
         "reconcile",
@@ -3858,7 +3943,7 @@
       "downloads": 0,
       "stars": 0,
       "created_at": "2026-03-14T00:00:00Z",
-      "updated_at": "2026-08-10T00:00:00Z"
+      "updated_at": "2026-08-24T00:00:00Z"
     },
     "red-team": {
       "name": "Red Team",
@@ -5008,6 +5093,46 @@
       "stars": 0,
       "created_at": "2026-03-02T00:00:00Z",
       "updated_at": "2026-03-02T00:00:00Z"
+    },
+    "taco": {
+      "name": "Taco Review",
+      "id": "taco",
+      "description": "Packages Spec Kit features for human review and syncs edits and comments back.",
+      "author": "Arcadia822",
+      "version": "0.3.1",
+      "download_url": "https://github.com/Arcadia822/taco/archive/refs/tags/v0.3.1.zip",
+      "repository": "https://github.com/Arcadia822/taco",
+      "homepage": "https://github.com/Arcadia822/taco",
+      "documentation": "https://github.com/Arcadia822/taco/blob/main/extensions/taco/README.md",
+      "changelog": "https://github.com/Arcadia822/taco/blob/v0.3.1/CHANGELOG.md",
+      "license": "MIT",
+      "category": "integration",
+      "effect": "read-write",
+      "requires": {
+        "speckit_version": ">=0.16.0,<2.0.0",
+        "tools": [
+          {
+            "name": "node",
+            "version": ">=22",
+            "required": true
+          }
+        ]
+      },
+      "provides": {
+        "commands": 2,
+        "hooks": 8
+      },
+      "tags": [
+        "documentation",
+        "review",
+        "spec-kit",
+        "human-in-the-loop"
+      ],
+      "verified": false,
+      "downloads": 0,
+      "stars": 0,
+      "created_at": "2026-08-25T00:00:00Z",
+      "updated_at": "2026-08-25T00:00:00Z"
     },
     "tasks-to-project": {
       "name": "Tasks to GitHub Project",
