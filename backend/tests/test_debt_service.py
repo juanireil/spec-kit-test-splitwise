@@ -1,5 +1,4 @@
 from decimal import Decimal
-import pytest
 from backend.src.models.member import MemberBalance
 from backend.src.services.debt_service import DebtSimplificationService
 
