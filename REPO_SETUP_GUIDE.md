@@ -1,10 +1,35 @@
 # Repository Setup, GitHub Governance & Spec Kit Quickstart
 
-This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **Antigravity CLI**, **GitHub MCP Server**, **Spec Kit installation**, **branch protection rules**, and **Copilot automated code reviews**.
+This guide contains step-by-step instructions for instructors, teaching assistants, and students to configure the complete development environment: **System Prerequisites**, **Antigravity CLI**, **GitHub MCP Server**, **Spec Kit installation**, **branch protection rules**, and **Copilot automated code reviews**.
 
 ---
 
-## 1. Google Antigravity CLI Installation & GitHub MCP Server
+## 1. System Prerequisites & Package Managers
+
+Before installing Antigravity and Spec Kit, ensure your machine has the following baseline runtimes and package managers:
+
+### A. Python & `uv` (Fast Python Package Manager)
+- **Python 3.10+**: Ensure Python is installed (`python3 --version`).
+- **`uv`**: The recommended modern toolchain for Python tools and virtual environments.
+  ```bash
+  # Linux/macOS
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
+
+### B. Node.js & `npx` (Required for GitHub MCP Server)
+- **Node.js (v18+) & npm/npx**: Required to run `@modelcontextprotocol/server-github`.
+  ```bash
+  node --version
+  npx --version
+  ```
+  *(If missing, install via [NodeJS.org](https://nodejs.org) or `nvm`)*.
+
+### C. Git & GitHub CLI (Optional but Recommended)
+- **Git**: Ensure Git is configured with your name and email (`git config --global user.name "..."`).
+
+---
+
+## 2. Google Antigravity CLI Installation & GitHub MCP Server
 
 [Google Antigravity CLI (`agy`)](https://antigravity.google) is an AI-first pair programming CLI.
 
@@ -38,7 +63,7 @@ To allow Antigravity to create issues, query pull requests, search commits, and 
 
 ---
 
-## 2. Spec Kit Installation & Project Initialization
+## 3. Spec Kit Installation & Project Initialization
 
 [Spec Kit](https://github.com/github/spec-kit) is an open-source framework by GitHub for Spec-Driven Development (SDD).
 
@@ -67,7 +92,7 @@ specify init .
 
 ---
 
-## 3. Git Hooks & Extension Configuration (`.specify/extensions.yml`)
+## 4. Git Hooks & Extension Configuration (`.specify/extensions.yml`)
 
 Ensure that the Git lifecycle hook extension is enabled so that feature branches and commits are created automatically by Spec Kit:
 
@@ -93,7 +118,7 @@ hooks:
 
 ---
 
-## 4. Hard-Blocking Direct Pushes to `main` (Branch Protection)
+## 5. Hard-Blocking Direct Pushes to `main` (Branch Protection)
 
 To enforce **Constitution Principle V & XII** (all code must flow through dedicated story branches and PRs):
 
@@ -114,7 +139,7 @@ To enforce **Constitution Principle V & XII** (all code must flow through dedica
 
 ---
 
-## 5. Configuring GitHub Copilot Code Reviews on PRs
+## 6. Configuring GitHub Copilot Code Reviews on PRs
 
 Configure automated code reviews focused strictly on code correctness, safety, and efficiency:
 
@@ -144,15 +169,16 @@ When reviewing pull requests, focus strictly on code-level safety, correctness, 
 
 ---
 
-## 6. Complete End-to-End Student Workflow
+## 7. Complete End-to-End Student Workflow
 
 ```text
- 1. Tooling Setup:    Install agy CLI + Add GitHub MCP server + Install specify-cli
- 2. Project Init:     specify init .
- 3. Ratify Rules:     /speckit-constitution
- 4. Specify & Plan:   /speckit-specify -> /speckit-clarify -> /speckit-plan -> /speckit-tasks
- 5. Issue Sync:       /speckit-taskstoissues (via GitHub MCP)
- 6. Implement:        /speckit-implement (1 story branch at a time, atomic commits)
- 7. Review & Merge:   Copilot & Peer Review -> Green CI/CD -> Merge to main
- 8. QA Audit:         /speckit-converge
+ 1. Prerequisites:    Python 3.10+ + uv + Node.js (v18+) + npx + git
+ 2. Tooling Setup:    Install agy CLI + Add GitHub MCP server + Install specify-cli
+ 3. Project Init:     specify init .
+ 4. Ratify Rules:     /speckit-constitution
+ 5. Specify & Plan:   /speckit-specify -> /speckit-clarify -> /speckit-plan -> /speckit-tasks
+ 6. Issue Sync:       /speckit-taskstoissues (via GitHub MCP)
+ 7. Implement:        /speckit-implement (1 story branch at a time, atomic commits)
+ 8. Review & Merge:   Copilot & Peer Review -> Green CI/CD -> Merge to main
+ 9. QA Audit:         /speckit-converge
 ```
