@@ -168,3 +168,73 @@ If two pairs invoke `/speckit-specify` at the exact same moment from `main`, the
   ```
 - **Option B: Timestamp-Based Numbering**:
   Configure `.specify/init-options.json` with `"feature_numbering": "timestamp"`. Spec Kit will generate collision-proof directories like `specs/20260824-101500-custom-splits` using unique second-level timestamps.
+
+---
+
+## Spec Kit Extensions: Idea Assessment & Bug Triage
+
+Spec Kit can be extended with specialized modular workflows using the CLI extension system (`specify extension add <name>`).
+
+Two powerful extensions for product discovery and maintenance are **Idea Assessment** and **Bug Triage**:
+
+```text
+ ┌─────────────────────────────────────────────────────────────────────────────────┐
+ │                      IDEA ASSESSMENT PIPELINE (assess)                          │
+ │  /speckit-assess-intake ─► /speckit-assess-research ─► /speckit-assess-define  │
+ │                                                              │                  │
+ │  /speckit-specify (GO) ◄─── /speckit-assess-decide ◄─────────┴── /assess-shape  │
+ └─────────────────────────────────────────────────────────────────────────────────┘
+
+ ┌─────────────────────────────────────────────────────────────────────────────────┐
+ │                         BUG TRIAGE WORKFLOW (bug)                               │
+ │   Bug Report ─► /speckit-bug-assess ─► /speckit-bug-fix ─► /speckit-bug-test   │
+ └─────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### 1. Idea Assessment Pipeline (`assess`)
+
+The `assess` extension structures upstream product discovery **before** committing time to write full specifications. It stores evidence and decision artifacts under `.specify/assessments/<slug>/`.
+
+#### Installation
+```bash
+specify extension add assess
+```
+
+#### Step-by-Step Discovery Commands:
+1. **`/speckit-assess-intake`**:
+   - Captures raw ideas from user interviews, feedback tickets, competitor observations, or URLs into a normalized intake note.
+2. **`/speckit-assess-research`**:
+   - Gathers evidence, market data, user feedback, and technical feasibility pointers to support or challenge the premise.
+3. **`/speckit-assess-define`**:
+   - Formally establishes who is affected, what hurts (the core problem), goals, non-goals, and quantifiable success metrics.
+4. **`/speckit-assess-shape`**:
+   - Shapes solution options, architectural boundaries, appetite (e.g. 2 days vs 2 weeks), and trade-offs without writing code.
+5. **`/speckit-assess-decide`**:
+   - Evaluates the shaped concept against a strict decision gate:
+     - **Go**: Automatically triggers and hands off the structured context to `/speckit-specify`.
+     - **Needs Clarification**: Flags missing data for further research.
+     - **Kill / Archive**: Closes the idea without wasting engineering capacity.
+
+---
+
+### 2. Bug Triage & Fix Workflow (`bug`)
+
+The `bug` extension provides a surgical, spec-aware workflow to assess, remediate, and verify bug reports without causing regressions or scope creep. It stores investigation logs under `.specify/bugs/<slug>/`.
+
+#### Installation
+```bash
+specify extension add bug
+```
+
+#### Step-by-Step Bug Lifecycle Commands:
+1. **`/speckit-bug-assess`**:
+   - Takes a bug description, error log, or GitHub Issue URL and investigates the codebase.
+   - Identifies the root cause, affected files, edge-case failure mechanisms, and outlines a minimal, targeted remediation plan.
+2. **`/speckit-bug-fix`**:
+   - Implements the exact remediation proposed in the assessment.
+   - Records every modified file, function, and behavioral change in a transparent audit log.
+3. **`/speckit-bug-test`**:
+   - Runs automated regression test suites and manual reproduction checks.
+   - Formally certifies that the bug is resolved, zero regressions were introduced, and generates a verification report.
