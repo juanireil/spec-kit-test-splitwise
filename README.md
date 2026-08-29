@@ -4,6 +4,67 @@ A minimal, zero-setup shared expense-splitting and debt minimization application
 
 ---
 
+## 🏛️ System Architecture & Tooling Ecosystem
+
+```text
+ ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │                                   💻 LOCAL DEVELOPER ENVIRONMENT                                      │
+ │                                                                                                        │
+ │   ┌──────────────────────┐         ┌───────────────────────────────────────────────────────────────┐   │
+ │   │  Developer / Student │         │                     🤖 AGENTIC AI CORE                        │   │
+ │   └──────────┬───────────┘         │                                                               │   │
+ │              │ Prompts             │   ┌────────────────────────┐      ┌───────────────────────┐   │   │
+ │              ▼                     │   │ Google Antigravity CLI │ ───► │ GitHub Spec Kit (CLI) │   │   │
+ │   ┌──────────────────────┐         │   │        ('agy')         │      │     (specify-cli)     │   │   │
+ │   │ Interactive Terminal │ ──────► │   └──────────┬─────────────┘      └───────────┬───────────┘   │   │
+ │   └──────────────────────┘         │              │                                │ Reads/Writes  │   │
+ │                                    │              │ JSON-RPC / stdio               ▼               │   │
+ │                                    │              │ Tool Execution      ┌──────────────────────┐   │   │
+ │                                    │              ▼                     │ .specify/ & specs/   │   │   │
+ │                                    │   ┌────────────────────────┐       │ - Constitution v1.5  │   │   │
+ │                                    │   │    GitHub MCP Server   │       │ - spec.md / plan.md  │   │   │
+ │                                    │   │ (@modelcontextprotocol)│       │ - tasks.md           │   │   │
+ │                                    │   └──────────┬─────────────┘       │ - openapi.json       │   │   │
+ │                                    └──────────────┼─────────────────────┴──────────────────────┘   │   │
+ │                                                   │                                                │   │
+ │                                                   │ REST / GraphQL API                             │   │
+ │   ┌───────────────────────────────────────────────┼────────────────────────────────────────────┐   │   │
+ │   │                                               ▼                                            │   │   │
+ │   │                         📦 SPLITWISE LITE MONOREPO APPLICATION                             │   │   │
+ │   │                                                                                            │   │   │
+ │   │      ┌───────────────────────────────────┐          ┌──────────────────────────────────┐   │   │   │
+ │   │      │   🐍 FastAPI Backend (:8000)      │          │   ⚛️ React + Vite UI (:5173)     │   │   │   │
+ │   │      │  - Pydantic Invariant Validation  │ ◄──────► │  - Expense Entry Form            │   │   │   │
+ │   │      │  - In-Memory Data Store           │ JSON API │  - Live Balance Sheet            │   │   │   │
+ │   │      │  - BalanceService & DebtService   │          │  - SVG Interactive Debt Graph    │   │   │   │
+ │   │      │  - Pytest Suite (100% Math Cover) │          │                                  │   │   │   │
+ │   │      └───────────────────────────────────┘          └──────────────────────────────────┘   │   │   │
+ │   │                                                                                            │   │   │
+ │   └───────────────────────────────────────────────┬────────────────────────────────────────────┘   │   │
+ └───────────────────────────────────────────────────┼────────────────────────────────────────────────────┘
+                                                     │ git push (Feature Branch / PR)
+                                                     ▼
+ ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+ │                                   ☁️ GITHUB CLOUD & GOVERNANCE PLATFORM                                 │
+ │                                                                                                        │
+ │   ┌────────────────────────────────────────────────────────────────────────────────────────────────┐   │
+ │   │                        🐙 Remote Repository (juanireil/spec-kit-test-splitwise)                │   │
+ │   │                        - Protected 'main' Branch (Direct Pushes Blocked)                       │   │
+ │   │                        - Tracked GitHub Issues & Bidirectional Traceability Matrix (RTM)       │   │
+ │   └──────────────────────┬─────────────────────────────────────────────────┬───────────────────────┘   │
+ │                          │                                                 │                           │
+ │                          ▼                                                 ▼                           │
+ │   ┌─────────────────────────────────────────────┐   ┌──────────────────────────────────────────────┐   │
+ │   │        ⚙️ GitHub Actions CI Pipeline        │   │       🤖 GitHub Copilot Code Review          │   │
+ │   │  1. Backend: Ruff Linter & Pytest Coverage  │   │  - Automated PR Code-Level Evaluation        │   │
+ │   │  2. Frontend: Production Build Check        │   │  - Strict Check on Precision, Safety & Math  │   │
+ │   │  Status Gate: 100% Green Required to Merge  │   │                                              │   │
+ │   └─────────────────────────────────────────────┘   └──────────────────────────────────────────────┘   │
+ └────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
 ## 📚 Course & Development Guides
 
 For instructors, teaching assistants, and students, refer to these dedicated documentation guides:
