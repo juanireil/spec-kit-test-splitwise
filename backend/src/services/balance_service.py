@@ -1,12 +1,12 @@
 from decimal import Decimal
-from typing import Dict, List
-from backend.src.models.member import Member, MemberBalance, BalanceSheetResponse
+
 from backend.src.models.expense import Expense
+from backend.src.models.member import BalanceSheetResponse, Member, MemberBalance
 
 
 class BalanceService:
     @staticmethod
-    def split_amount_equally(amount: Decimal, participant_ids: List[str]) -> Dict[str, Decimal]:
+    def split_amount_equally(amount: Decimal, participant_ids: list[str]) -> dict[str, Decimal]:
         """
         Splits a monetary amount equally among participants with exact penny precision.
         Remainder cents are assigned to the first R participants in order, guaranteeing
@@ -20,7 +20,7 @@ class BalanceService:
         base_share_cents = total_cents // n
         remainder_cents = total_cents % n
 
-        shares: Dict[str, Decimal] = {}
+        shares: dict[str, Decimal] = {}
         for index, participant_id in enumerate(participant_ids):
             extra_cent = 1 if index < remainder_cents else 0
             participant_cents = base_share_cents + extra_cent
@@ -29,14 +29,14 @@ class BalanceService:
         return shares
 
     @classmethod
-    def calculate_balances(cls, members: List[Member], expenses: List[Expense]) -> BalanceSheetResponse:
+    def calculate_balances(cls, members: list[Member], expenses: list[Expense]) -> BalanceSheetResponse:
         """
         Calculates each member's net balance: Total Paid - Total Owed.
         Status is determined as 'owed' (>0), 'owes' (<0), or 'settled' (==0).
         Guarantees zero-sum invariant across the entire group.
         """
-        paid_map: Dict[str, Decimal] = {m.id: Decimal("0.00") for m in members}
-        owed_map: Dict[str, Decimal] = {m.id: Decimal("0.00") for m in members}
+        paid_map: dict[str, Decimal] = {m.id: Decimal("0.00") for m in members}
+        owed_map: dict[str, Decimal] = {m.id: Decimal("0.00") for m in members}
         total_expenses = Decimal("0.00")
 
         for expense in expenses:
@@ -49,7 +49,7 @@ class BalanceService:
                 if participant_id in owed_map:
                     owed_map[participant_id] += share
 
-        member_balances: List[MemberBalance] = []
+        member_balances: list[MemberBalance] = []
         for m in members:
             net = paid_map.get(m.id, Decimal("0.00")) - owed_map.get(m.id, Decimal("0.00"))
             if net > Decimal("0.00"):

@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 import pytest
 from fastapi.testclient import TestClient
+
 from backend.src.main import app
 from backend.src.repositories.expense_repository import repository
 

@@ -1,12 +1,12 @@
 from decimal import Decimal
-from typing import List
+
 from backend.src.models.member import MemberBalance
-from backend.src.models.settlement import SettlementTransaction, SettlementPlanResponse
+from backend.src.models.settlement import SettlementPlanResponse, SettlementTransaction
 
 
 class DebtSimplificationService:
     @classmethod
-    def simplify_debts(cls, balances: List[MemberBalance]) -> SettlementPlanResponse:
+    def simplify_debts(cls, balances: list[MemberBalance]) -> SettlementPlanResponse:
         """
         Transforms member balances into a minimal set of direct settlement transactions
         using a greedy matching algorithm between largest remaining debtors and creditors.
@@ -35,7 +35,7 @@ class DebtSimplificationService:
         debtors.sort(key=lambda d: d["amount"], reverse=True)
         creditors.sort(key=lambda c: c["amount"], reverse=True)
 
-        transactions: List[SettlementTransaction] = []
+        transactions: list[SettlementTransaction] = []
         total_settled = Decimal("0.00")
 
         d_idx = 0
