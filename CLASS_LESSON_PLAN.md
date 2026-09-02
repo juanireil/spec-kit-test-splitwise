@@ -85,10 +85,10 @@ Here is the complete command reference. Share this on-screen to guide students o
 - **Good Prompt Example**:
   ```text
   /speckit-specify
-  Feature: Category-Based Expense Filtering & Visual Breakdown
+  Feature: Unequal / Custom Expense Splits (Exact Amounts and Percentages)
   Description:
-  Allow members to assign a category (Food, Utilities, Entertainment, Transport) when recording an expense.
-  Users must be able to filter expenses by category in the activity list, and see a visual percentage breakdown chart of total spending by category.
+  Allow users to create expenses where the amount owed by each participant can be customized either by exact monetary amounts or by percentages, while guaranteeing that the complete expense amount is allocated exactly.
+  Enforce the fundamental invariant: Sum(participant shares) == Expense total with zero fractional-cent drift.
   ```
 - ⚠️ **What to Mention**: User personas, user stories (P1, P2), functional requirements, acceptance scenarios, mathematical invariants, and explicit out-of-scope boundaries.
 - 🚫 **What NOT to Mention**: **NO TECHNICAL IMPLEMENTATION DETAILS**. Do not mention React hooks, FastAPI routes, SQL queries, database tables, or CSS classes. Keep the spec 100% technology-agnostic English.
@@ -101,7 +101,7 @@ Here is the complete command reference. Share this on-screen to guide students o
   ```text
   /speckit-clarify
   ```
-  *(Or provide focus areas: `/speckit-clarify Focus on category deletion and default category fallback rules`)*.
+  *(Or provide focus areas: `/speckit-clarify Focus on fractional cent remainder allocation order for percentage splits and boundary validation when a custom share is $0.00`)*.
 - ⚠️ **What to Mention**: Point out specific business ambiguities you want to clarify.
 - 🚫 **What NOT to Mention**: Do not answer with code snippets. Choose or specify business policy rules.
 
@@ -112,9 +112,10 @@ Here is the complete command reference. Share this on-screen to guide students o
 - **Good Prompt Example**:
   ```text
   /speckit-plan
-  Use FastAPI with Pydantic Enum for backend category validation.
-  For the frontend, build a reusable CategoryBadge component and a Tailwind-based visual progress bar for spending percentage.
-  Ensure in-memory persistence and define OpenAPI contracts.
+  Extend the expense model and creation flow to support Equal, Exact Amounts, and Percentages.
+  Backend: Use FastAPI with Pydantic validators enforcing exact penny conservation using Decimal arithmetic.
+  Frontend: Add split mode selector in ExpenseForm with dynamic rows and real-time remainder allocation feedback.
+  Ensure backward compatibility with existing balance calculation and debt minimization graph.
   ```
 - ⚠️ **What to Mention**: Technology stack choices, component architecture, data models, OpenAPI contracts, and file locations.
 - 🚫 **What NOT to Mention**: Do not generate full application source code yet; focus on architectural strategy and interface schemas.
@@ -137,8 +138,8 @@ Here is the complete command reference. Share this on-screen to guide students o
 - **Good Prompt Example**:
   ```text
   /speckit-tasks
-  Generate atomic, dependency-ordered tasks grouped by User Story.
-  Ensure tests are written first (TDD) for every backend endpoint and frontend component.
+  Generate atomic, dependency-ordered tasks for Unequal / Custom Expense Splits grouped by User Story.
+  Ensure tests are written first (TDD) for backend validation, balance math, and frontend components.
   ```
 - ⚠️ **What to Mention**: Task grouping by User Story (`[US1]`, `[US2]`), exact file paths, and test-first sequence.
 - 🚫 **What NOT to Mention**: Vague, sprawling multi-file tasks (e.g. "Build the entire frontend").
@@ -172,8 +173,8 @@ Here is the complete command reference. Share this on-screen to guide students o
 - **Good Prompt Example**:
   ```text
   /speckit-implement
-  Implement User Story 1 (Category Tagging & Filtering) on a dedicated branch.
-  Follow TDD, ensure 100% test coverage, create 1:1 atomic commits per task, and open a Pull Request.
+  Implement User Story 1 & 2 (Backend Custom Split Engine & Exact/Percentage Validation) on a dedicated branch.
+  Follow TDD, ensure 100% path coverage on balance calculations, create 1:1 atomic commits per task, and open a Pull Request.
   ```
 - ⚠️ **What to Mention**: Target a single User Story or phase at a time; enforce atomic commits (`T###`) and PR creation.
 - 🚫 **What NOT to Mention**: Do not instruct the agent to implement the entire multi-week project in one massive pass.
@@ -185,7 +186,7 @@ Here is the complete command reference. Share this on-screen to guide students o
 - **Good Prompt Example**:
   ```text
   /speckit-converge
-  Audit the codebase against specs/003-category-expense-filtering/spec.md and report any missing requirements or regressions.
+  Audit the codebase against specs/003-custom-splits/spec.md and report any missing requirements or regressions.
   ```
 - ⚠️ **What to Mention**: Request audit against functional requirements (`FR-###`), acceptance criteria, and constitutional invariants.
 - 🚫 **What NOT to Mention**: Do not manually delete tasks; `/speckit-converge` will append any missing delta tasks automatically if gaps exist.
@@ -222,22 +223,23 @@ Open [`.specify/memory/constitution.md`](.specify/memory/constitution.md) and hi
 Show the students what is already built in SplitWise Lite:
 1. **Backend**: Running on `http://localhost:8000/docs` (Swagger UI showing `/expenses`, `/balances`, `/settlements`).
 2. **Frontend**: Running on `http://localhost:5173` (Showing live group members, expense recording, balances, and transaction graph).
-3. **The Goal for Today's Demo**: Build **Feature 003: Category-Based Expense Filtering & Visual Spending Breakdown**.
+3. **The Goal for Today's Demo**: Build **Feature 003: Unequal / Custom Expense Splits (Exact Amounts & Percentages)**.
 
 ---
 
 ## Part 3: Live Demo — Specifying, Planning & Tasking (15 Minutes)
 
+> [!TIP]
+> For the complete copy-pasteable prompt texts, refer to [`CLASS_PROMPTS.md`](CLASS_PROMPTS.md).
+
 ### Step 1: `/speckit-specify` (4 min)
-Run the slash command:
+Run the slash command (from `CLASS_PROMPTS.md`):
 ```text
 /speckit-specify
-Feature: Category-Based Expense Filtering & Analytics
-Description:
-Allow users to tag expenses with a category (e.g. Food, Transportation, Entertainment, Utilities).
-Users should be able to filter expenses by category in the activity list and see a visual percentage breakdown of group spending by category.
+Define the product specification for a new iteration: Unequal / Custom Expense Splits.
+(Full prompt in CLASS_PROMPTS.md)
 ```
-**Key Teaching Point**: Open `specs/003-category-expense-filtering/spec.md` and show how user stories, invariants, and boundaries are documented in plain English without technical code leakage.
+**Key Teaching Point**: Open `specs/003-custom-splits/spec.md` (or newly generated spec) and show how user stories, invariants ($\sum \text{Shares} \equiv \text{Expense Total}$), and boundaries are documented in plain English without technical code leakage.
 
 ---
 
@@ -245,17 +247,20 @@ Users should be able to filter expenses by category in the activity list and see
 Run:
 ```text
 /speckit-clarify
+Focus on fractional cent remainder allocation order for percentage splits and boundary validation when a custom share is $0.00.
 ```
-**Key Teaching Point**: Show how the agent conducts a design interview to resolve ambiguities (e.g. default category fallback) before any technical design begins.
+**Key Teaching Point**: Show how the agent conducts a design interview to resolve edge-case ambiguities before any technical design begins.
 
 ---
 
 ### Step 3: `/speckit-plan` (4 min)
-Run:
+Run the slash command (from `CLASS_PROMPTS.md`):
 ```text
 /speckit-plan
+Create the technical implementation plan for the Unequal / Custom Expense Splits feature based on the approved specification.
+(Full prompt in CLASS_PROMPTS.md)
 ```
-**Key Teaching Point**: Open `plan.md` and `contracts/openapi.json`. Highlight that architectural planning and contract definition occur before writing code.
+**Key Teaching Point**: Open `plan.md` and `contracts/openapi.json`. Highlight that architectural planning, Decimal penny math, and contract definitions occur before writing code.
 
 ---
 
@@ -300,7 +305,7 @@ Switch to the GitHub browser tab:
    - **Traceability**: Description references `closes #<IssueID>`.
    - **Copilot Automated Code Review**: Show Copilot evaluating code safety, efficiency, and cleanliness.
    - **GitHub Actions CI/CD Pipeline**: Show `Backend Lint & Tests` and `Frontend Build` running and turning **Green 🟢**.
-3. Merge the PR to `main`, pull `main` locally, and refresh `http://localhost:5173` to see the new category filters live in the application!
+3. Merge the PR to `main`, pull `main` locally, and refresh `http://localhost:5173` to see the new custom splits live in the application!
 
 ---
 
@@ -313,7 +318,7 @@ Switch to the GitHub browser tab:
   - **Bug Triage (`bug`)**: Installed via `specify extension add bug` for surgical debugging (`assess` $\rightarrow$ `fix` $\rightarrow$ `test`).
 
 ### 5.2 Lab Instructions for Students (3 min)
-1. Point students to [`REPO_SETUP_GUIDE.md`](REPO_SETUP_GUIDE.md) and [`WORKFLOW_GUIDE.md`](WORKFLOW_GUIDE.md).
+1. Point students to [`REPO_SETUP_GUIDE.md`](REPO_SETUP_GUIDE.md), [`SPRINT_PLAYBOOK.md`](SPRINT_PLAYBOOK.md), and [`CLASS_PROMPTS.md`](CLASS_PROMPTS.md).
 2. Form student pairs.
 3. Choose a user story from Sprint 1 wave.
 4. Execute the SDD lifecycle on dedicated branches with peer reviews!
