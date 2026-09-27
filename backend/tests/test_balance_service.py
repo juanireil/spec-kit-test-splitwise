@@ -379,3 +379,14 @@ def test_split_amount_percentages_missing_participant_raises():
         )
 
 
+def test_split_amount_exact_empty_participants_raises():
+    with pytest.raises(ValueError, match="Participant list cannot be empty"):
+        BalanceService.split_amount_exact(Decimal("100.00"), [], {})
+
+
+def test_split_amount_percentages_empty_participants_raises():
+    with pytest.raises(ValueError, match="Participant list cannot be empty"):
+        BalanceService.split_amount_percentages(Decimal("100.00"), [], {})
+
+
+

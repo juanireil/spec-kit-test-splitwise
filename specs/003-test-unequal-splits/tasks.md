@@ -58,9 +58,9 @@
 
 ### Implementation for User Story 2
 
-- [ ] T013 [US2] Implement `split_amount_percentages` with deterministic Largest Remainder Method in `backend/src/services/balance_service.py`
-- [ ] T014 [US2] Connect `POST /api/expenses` in `backend/src/api/routes.py` to handle and validate PERCENTAGE split requests
-- [ ] T015 [US2] Implement Percentage split UI inputs and dynamic monetary share calculation in `frontend/src/components/ExpenseForm.jsx`
+- [x] T013 [US2] Implement `split_amount_percentages` with deterministic Largest Remainder Method in `backend/src/services/balance_service.py`
+- [x] T014 [US2] Connect `POST /api/expenses` in `backend/src/api/routes.py` to handle and validate PERCENTAGE split requests
+- [x] T015 [US2] Implement Percentage split UI inputs and dynamic monetary share calculation in `frontend/src/components/ExpenseForm.jsx`
 
 **Checkpoint**: Percentage splits are fully supported and independently testable.
 
