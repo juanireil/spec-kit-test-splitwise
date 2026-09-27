@@ -74,9 +74,9 @@
 
 ### Implementation for User Story 3
 
-- [ ] T016 [P] [US3] Add split mode selector tabs (Equal, Exact Amounts, Percentages) in `frontend/src/components/ExpenseForm.jsx`
-- [ ] T017 [US3] Implement real-time live balance remaining / over-allocated indicators and submission disable guardrails in `frontend/src/components/ExpenseForm.jsx`
-- [ ] T018 [US3] Add split mode badge and individual participant share amounts breakdown in `frontend/src/components/ExpenseList.jsx`
+- [x] T016 [P] [US3] Add split mode selector tabs (Equal, Exact Amounts, Percentages) in `frontend/src/components/ExpenseForm.jsx`
+- [x] T017 [US3] Implement real-time live balance remaining / over-allocated indicators and submission disable guardrails in `frontend/src/components/ExpenseForm.jsx`
+- [x] T018 [US3] Add split mode badge and individual participant share amounts breakdown in `frontend/src/components/ExpenseList.jsx`
 
 ---
 
