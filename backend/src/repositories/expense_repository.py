@@ -1,9 +1,11 @@
 import threading
 import uuid
 from datetime import datetime, timezone
+from decimal import Decimal
 
-from backend.src.models.expense import Expense, ExpenseCreate
+from backend.src.models.expense import Expense, ExpenseCreate, SplitMode
 from backend.src.models.member import Member
+from backend.src.services.balance_service import BalanceService
 
 
 class InMemoryExpenseRepository:
@@ -31,13 +33,20 @@ class InMemoryExpenseRepository:
         with self._lock:
             return self._members.get(member_id)
 
-    def add_expense(self, expense_create: ExpenseCreate) -> Expense:
+    def add_expense(self, expense_create: ExpenseCreate, shares: dict[str, Decimal] | None = None) -> Expense:
         with self._lock:
+            if shares is None:
+                shares = BalanceService.split_amount_equally(
+                    expense_create.amount, expense_create.participant_ids
+                )
+
             expense = Expense(
                 id=f"exp-{uuid.uuid4().hex[:8]}",
                 amount=expense_create.amount,
                 payer_id=expense_create.payer_id,
                 participant_ids=expense_create.participant_ids,
+                split_mode=expense_create.split_mode,
+                shares=shares,
                 created_at=datetime.now(timezone.utc),
             )
             self._expenses.append(expense)
