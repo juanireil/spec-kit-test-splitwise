@@ -84,9 +84,9 @@
 
 **Purpose**: Verification, linter compliance, build checks, and quickstart validation walkthrough.
 
-- [ ] T019 Run full test suite with 100% path coverage check across all split algorithms via `backend/tests`
-- [ ] T020 [P] Run frontend production build validation (`npm run build` in `frontend/`)
-- [ ] T021 Execute end-to-end quickstart walkthrough scenarios from `specs/003-test-unequal-splits/quickstart.md`
+- [x] T019 Run full test suite with 100% path coverage check across all split algorithms via `backend/tests`
+- [x] T020 [P] Run frontend production build validation (`npm run build` in `frontend/`)
+- [x] T021 Execute end-to-end quickstart walkthrough scenarios from `specs/003-test-unequal-splits/quickstart.md`
 
 ---
 
