@@ -31,8 +31,8 @@
 
 ### Tests for User Story 1 (Constitution Principle IV: 100% Path Coverage)
 
-- [ ] T005 [P] [US1] Write unit tests for `split_amount_exact` and penny conservation with exact dollar shares in `backend/tests/test_balance_service.py`
-- [ ] T006 [P] [US1] Write API integration tests for `POST /api/expenses` with valid and invalid EXACT split modes in `backend/tests/test_api.py`
+- [x] T005 [P] [US1] Write unit tests for `split_amount_exact` and penny conservation with exact dollar shares in `backend/tests/test_balance_service.py`
+- [x] T006 [P] [US1] Write API integration tests for `POST /api/expenses` with valid and invalid EXACT split modes in `backend/tests/test_api.py`
 
 ### Implementation for User Story 1
 

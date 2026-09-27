@@ -179,3 +179,111 @@ def test_split_shares_calculation_direct():
 def test_split_empty_participants_raises():
     with pytest.raises(ValueError, match="Participant list cannot be empty"):
         BalanceService.split_amount_equally(Decimal("50.00"), [])
+
+
+# ---------------------------------------------------------
+# User Story 1 (Exact Amounts) Tests
+# ---------------------------------------------------------
+
+def test_split_amount_exact_valid_story_example():
+    # Alice: $50.00, Bob: $30.00, Charlie: $20.00 for $100.00 total
+    shares = BalanceService.split_amount_exact(
+        amount=Decimal("100.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_shares={"alice": Decimal("50.00"), "bob": Decimal("30.00"), "charlie": Decimal("20.00")},
+    )
+    assert shares["alice"] == Decimal("50.00")
+    assert shares["bob"] == Decimal("30.00")
+    assert shares["charlie"] == Decimal("20.00")
+    assert sum(shares.values()) == Decimal("100.00")
+
+
+def test_split_amount_exact_penny_conservation():
+    # $100.00 exact cent split: 33.33 + 33.33 + 33.34 = 100.00
+    shares = BalanceService.split_amount_exact(
+        amount=Decimal("100.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_shares={"alice": Decimal("33.33"), "bob": Decimal("33.33"), "charlie": Decimal("33.34")},
+    )
+    assert sum(shares.values()) == Decimal("100.00")
+
+
+def test_split_amount_exact_with_zero_share():
+    # Charlie owes $0.00
+    shares = BalanceService.split_amount_exact(
+        amount=Decimal("50.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_shares={"alice": Decimal("30.00"), "bob": Decimal("20.00"), "charlie": Decimal("0.00")},
+    )
+    assert shares["charlie"] == Decimal("0.00")
+    assert sum(shares.values()) == Decimal("50.00")
+
+
+def test_split_amount_exact_single_participant_full_amount():
+    shares = BalanceService.split_amount_exact(
+        amount=Decimal("75.50"),
+        participant_ids=["alice"],
+        custom_shares={"alice": Decimal("75.50")},
+    )
+    assert shares["alice"] == Decimal("75.50")
+    assert sum(shares.values()) == Decimal("75.50")
+
+
+def test_split_amount_exact_under_allocated_raises():
+    with pytest.raises(ValueError, match="Sum of exact split shares.*does not equal expense amount"):
+        BalanceService.split_amount_exact(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob", "charlie"],
+            custom_shares={"alice": Decimal("50.00"), "bob": Decimal("30.00"), "charlie": Decimal("15.00")},
+        )
+
+
+def test_split_amount_exact_over_allocated_raises():
+    with pytest.raises(ValueError, match="Sum of exact split shares.*does not equal expense amount"):
+        BalanceService.split_amount_exact(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob", "charlie"],
+            custom_shares={"alice": Decimal("50.00"), "bob": Decimal("30.00"), "charlie": Decimal("25.00")},
+        )
+
+
+def test_split_amount_exact_negative_share_raises():
+    with pytest.raises(ValueError, match="Share for member.*cannot be negative"):
+        BalanceService.split_amount_exact(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob"],
+            custom_shares={"alice": Decimal("120.00"), "bob": Decimal("-20.00")},
+        )
+
+
+def test_split_amount_exact_missing_participant_raises():
+    with pytest.raises(ValueError, match="Missing exact split share for participant: charlie"):
+        BalanceService.split_amount_exact(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob", "charlie"],
+            custom_shares={"alice": Decimal("60.00"), "bob": Decimal("40.00")},
+        )
+
+
+def test_calculate_balances_with_exact_splits(standard_members):
+    # Alice pays $100.00 with exact shares: Alice: $50, Bob: $30, Charlie: $20
+    expenses = [
+        Expense(
+            id="exp-exact-1",
+            amount=Decimal("100.00"),
+            payer_id="alice",
+            participant_ids=["alice", "bob", "charlie"],
+            split_mode="EXACT",
+            shares={"alice": Decimal("50.00"), "bob": Decimal("30.00"), "charlie": Decimal("20.00")},
+            created_at=datetime.now(timezone.utc),
+        )
+    ]
+    sheet = BalanceService.calculate_balances(standard_members, expenses)
+    balances = {b.member_id: b for b in sheet.balances}
+
+    assert balances["alice"].balance == Decimal("50.00")
+    assert balances["bob"].balance == Decimal("-30.00")
+    assert balances["charlie"].balance == Decimal("-20.00")
+    assert balances["david"].balance == Decimal("0.00")
+    assert sum(b.balance for b in sheet.balances) == Decimal("0.00")
+

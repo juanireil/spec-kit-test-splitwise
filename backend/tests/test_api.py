@@ -116,3 +116,69 @@ def test_get_balances_flow(client):
     assert b_map["alice"]["status"] == "owed"
     assert Decimal(str(b_map["bob"]["balance"])) == Decimal("-30.00")
     assert b_map["bob"]["status"] == "owes"
+
+
+# ---------------------------------------------------------
+# User Story 1 (Exact Splits) API Tests
+# ---------------------------------------------------------
+
+def test_create_expense_exact_split_success(client):
+    payload = {
+        "amount": 100.00,
+        "payer_id": "alice",
+        "participant_ids": ["alice", "bob", "charlie"],
+        "split_mode": "EXACT",
+        "custom_splits": [
+            {"member_id": "alice", "amount": 50.00},
+            {"member_id": "bob", "amount": 30.00},
+            {"member_id": "charlie", "amount": 20.00},
+        ],
+    }
+    res = client.post("/api/expenses", json=payload)
+    assert res.status_code == 201
+    data = res.json()
+    assert data["split_mode"] == "EXACT"
+    assert Decimal(str(data["shares"]["alice"])) == Decimal("50.00")
+    assert Decimal(str(data["shares"]["bob"])) == Decimal("30.00")
+    assert Decimal(str(data["shares"]["charlie"])) == Decimal("20.00")
+
+    # Balances verification
+    b_res = client.get("/api/balances")
+    balances = {b["member_id"]: Decimal(str(b["balance"])) for b in b_res.json()["balances"]}
+    assert balances["alice"] == Decimal("50.00")
+    assert balances["bob"] == Decimal("-30.00")
+    assert balances["charlie"] == Decimal("-20.00")
+    assert balances["david"] == Decimal("0.00")
+
+
+def test_create_expense_exact_split_invalid_sum(client):
+    payload = {
+        "amount": 100.00,
+        "payer_id": "alice",
+        "participant_ids": ["alice", "bob", "charlie"],
+        "split_mode": "EXACT",
+        "custom_splits": [
+            {"member_id": "alice", "amount": 50.00},
+            {"member_id": "bob", "amount": 30.00},
+            {"member_id": "charlie", "amount": 15.00},  # Sum = 95 != 100
+        ],
+    }
+    res = client.post("/api/expenses", json=payload)
+    assert res.status_code == 400
+    assert "Sum of exact split shares" in res.json()["detail"]
+
+
+def test_create_expense_exact_split_missing_participant(client):
+    payload = {
+        "amount": 100.00,
+        "payer_id": "alice",
+        "participant_ids": ["alice", "bob", "charlie"],
+        "split_mode": "EXACT",
+        "custom_splits": [
+            {"member_id": "alice", "amount": 60.00},
+            {"member_id": "bob", "amount": 40.00},
+        ],
+    }
+    res = client.post("/api/expenses", json=payload)
+    assert res.status_code == 400
+
