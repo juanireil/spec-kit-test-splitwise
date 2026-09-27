@@ -182,3 +182,46 @@ def test_create_expense_exact_split_missing_participant(client):
     res = client.post("/api/expenses", json=payload)
     assert res.status_code == 400
 
+
+# ---------------------------------------------------------
+# User Story 2 (Percentage Splits) API Tests
+# ---------------------------------------------------------
+
+def test_create_expense_percentage_split_success(client):
+    payload = {
+        "amount": 100.00,
+        "payer_id": "alice",
+        "participant_ids": ["alice", "bob", "charlie"],
+        "split_mode": "PERCENTAGE",
+        "custom_splits": [
+            {"member_id": "alice", "percentage": 33.33},
+            {"member_id": "bob", "percentage": 33.33},
+            {"member_id": "charlie", "percentage": 33.34},
+        ],
+    }
+    res = client.post("/api/expenses", json=payload)
+    assert res.status_code == 201
+    data = res.json()
+    assert data["split_mode"] == "PERCENTAGE"
+    assert Decimal(str(data["shares"]["alice"])) == Decimal("33.33")
+    assert Decimal(str(data["shares"]["bob"])) == Decimal("33.33")
+    assert Decimal(str(data["shares"]["charlie"])) == Decimal("33.34")
+
+
+def test_create_expense_percentage_split_invalid_sum(client):
+    payload = {
+        "amount": 100.00,
+        "payer_id": "alice",
+        "participant_ids": ["alice", "bob", "charlie"],
+        "split_mode": "PERCENTAGE",
+        "custom_splits": [
+            {"member_id": "alice", "percentage": 33.33},
+            {"member_id": "bob", "percentage": 33.33},
+            {"member_id": "charlie", "percentage": 33.33},  # Sum = 99.99 != 100
+        ],
+    }
+    res = client.post("/api/expenses", json=payload)
+    assert res.status_code == 400
+    assert "Sum of percentages" in res.json()["detail"]
+
+

@@ -287,3 +287,95 @@ def test_calculate_balances_with_exact_splits(standard_members):
     assert balances["david"].balance == Decimal("0.00")
     assert sum(b.balance for b in sheet.balances) == Decimal("0.00")
 
+
+# ---------------------------------------------------------
+# User Story 2 (Percentage Splits) Tests
+# ---------------------------------------------------------
+
+def test_split_amount_percentages_story_example():
+    # Alice: 50%, Bob: 30%, Charlie: 20% on $100.00
+    shares = BalanceService.split_amount_percentages(
+        amount=Decimal("100.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_percentages={"alice": Decimal("50.00"), "bob": Decimal("30.00"), "charlie": Decimal("20.00")},
+    )
+    assert shares["alice"] == Decimal("50.00")
+    assert shares["bob"] == Decimal("30.00")
+    assert shares["charlie"] == Decimal("20.00")
+    assert sum(shares.values()) == Decimal("100.00")
+
+
+def test_split_amount_percentages_odd_cents_three_way():
+    # 33.33%, 33.33%, 33.34% on $100.00
+    shares = BalanceService.split_amount_percentages(
+        amount=Decimal("100.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_percentages={"alice": Decimal("33.33"), "bob": Decimal("33.33"), "charlie": Decimal("33.34")},
+    )
+    assert shares["alice"] == Decimal("33.33")
+    assert shares["bob"] == Decimal("33.33")
+    assert shares["charlie"] == Decimal("33.34")
+    assert sum(shares.values()) == Decimal("100.00")
+
+
+def test_split_amount_percentages_small_amount():
+    # $0.05 on 33.33%, 33.33%, 33.34%
+    shares = BalanceService.split_amount_percentages(
+        amount=Decimal("0.05"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_percentages={"alice": Decimal("33.33"), "bob": Decimal("33.33"), "charlie": Decimal("33.34")},
+    )
+    assert sum(shares.values()) == Decimal("0.05")
+
+
+def test_split_amount_percentages_decimal_percentages():
+    # 12.5%, 37.5%, 50.0% on $80.00 -> $10.00, $30.00, $40.00
+    shares = BalanceService.split_amount_percentages(
+        amount=Decimal("80.00"),
+        participant_ids=["alice", "bob", "charlie"],
+        custom_percentages={"alice": Decimal("12.50"), "bob": Decimal("37.50"), "charlie": Decimal("50.00")},
+    )
+    assert shares["alice"] == Decimal("10.00")
+    assert shares["bob"] == Decimal("30.00")
+    assert shares["charlie"] == Decimal("40.00")
+    assert sum(shares.values()) == Decimal("80.00")
+
+
+def test_split_amount_percentages_with_zero_and_100():
+    shares = BalanceService.split_amount_percentages(
+        amount=Decimal("50.00"),
+        participant_ids=["alice", "bob"],
+        custom_percentages={"alice": Decimal("100.00"), "bob": Decimal("0.00")},
+    )
+    assert shares["alice"] == Decimal("50.00")
+    assert shares["bob"] == Decimal("0.00")
+    assert sum(shares.values()) == Decimal("50.00")
+
+
+def test_split_amount_percentages_not_100_raises():
+    with pytest.raises(ValueError, match="Sum of percentages.*must equal exactly 100%"):
+        BalanceService.split_amount_percentages(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob", "charlie"],
+            custom_percentages={"alice": Decimal("33.33"), "bob": Decimal("33.33"), "charlie": Decimal("33.33")},
+        )
+
+
+def test_split_amount_percentages_negative_raises():
+    with pytest.raises(ValueError, match="Percentage for member.*cannot be negative"):
+        BalanceService.split_amount_percentages(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob"],
+            custom_percentages={"alice": Decimal("120.00"), "bob": Decimal("-20.00")},
+        )
+
+
+def test_split_amount_percentages_missing_participant_raises():
+    with pytest.raises(ValueError, match="Missing percentage split share for participant: charlie"):
+        BalanceService.split_amount_percentages(
+            amount=Decimal("100.00"),
+            participant_ids=["alice", "bob", "charlie"],
+            custom_percentages={"alice": Decimal("60.00"), "bob": Decimal("40.00")},
+        )
+
+

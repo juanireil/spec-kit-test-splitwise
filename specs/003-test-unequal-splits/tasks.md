@@ -53,8 +53,8 @@
 
 ### Tests for User Story 2
 
-- [ ] T011 [P] [US2] Write unit tests for `split_amount_percentages` with Hamilton largest remainder distribution and odd cents in `backend/tests/test_balance_service.py`
-- [ ] T012 [P] [US2] Write API integration tests for `POST /api/expenses` with valid (100%) and invalid percentages in `backend/tests/test_api.py`
+- [x] T011 [P] [US2] Write unit tests for `split_amount_percentages` with Hamilton largest remainder distribution and odd cents in `backend/tests/test_balance_service.py`
+- [x] T012 [P] [US2] Write API integration tests for `POST /api/expenses` with valid (100%) and invalid percentages in `backend/tests/test_api.py`
 
 ### Implementation for User Story 2
 
