@@ -19,7 +19,7 @@
 
 - [x] T002 [P] Extend `SplitMode` enum, `SplitShareInput`, `ExpenseCreate`, and `Expense` models with `shares: dict[str, Decimal]` in `backend/src/models/expense.py`
 - [x] T003 Update `InMemoryExpenseRepository.add_expense` to persist `split_mode` and calculated `shares` in `backend/src/repositories/expense_repository.py`
-- [ ] T004 [P] Update API client in `frontend/src/services/api.js` to support `split_mode` and `custom_splits` payloads
+- [x] T004 [P] Update API client in `frontend/src/services/api.js` to support `split_mode` and `custom_splits` payloads
 
 ---
 
