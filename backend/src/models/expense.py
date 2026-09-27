@@ -1,13 +1,28 @@
 from datetime import datetime
 from decimal import Decimal
+from enum import Enum
 
 from pydantic import BaseModel, Field, field_validator
+
+
+class SplitMode(str, Enum):
+    EQUAL = "EQUAL"
+    EXACT = "EXACT"
+    PERCENTAGE = "PERCENTAGE"
+
+
+class SplitShareInput(BaseModel):
+    member_id: str = Field(..., min_length=1, description="Participant member ID")
+    amount: Decimal | None = Field(None, ge=Decimal("0.00"), decimal_places=2, description="Exact monetary amount owed")
+    percentage: Decimal | None = Field(None, ge=Decimal("0.00"), decimal_places=2, description="Percentage share owed")
 
 
 class ExpenseCreate(BaseModel):
     amount: Decimal = Field(..., gt=Decimal("0.00"), decimal_places=2, description="Total amount paid")
     payer_id: str = Field(..., min_length=1, description="ID of member who paid")
     participant_ids: list[str] = Field(..., min_length=1, description="List of member IDs sharing the expense")
+    split_mode: SplitMode = Field(default=SplitMode.EQUAL, description="Selected split division mode")
+    custom_splits: list[SplitShareInput] | None = Field(default=None, description="Custom split shares for EXACT or PERCENTAGE modes")
 
     @field_validator("participant_ids")
     @classmethod
@@ -29,6 +44,11 @@ class ExpenseCreate(BaseModel):
         return v
 
 
-class Expense(ExpenseCreate):
+class Expense(BaseModel):
     id: str
+    amount: Decimal = Field(..., gt=Decimal("0.00"), decimal_places=2)
+    payer_id: str = Field(..., min_length=1)
+    participant_ids: list[str] = Field(..., min_length=1)
+    split_mode: SplitMode = Field(default=SplitMode.EQUAL)
+    shares: dict[str, Decimal] = Field(default_factory=dict, description="Calculated exact monetary share owed by each participant")
     created_at: datetime
