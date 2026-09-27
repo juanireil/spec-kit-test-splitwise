@@ -1,0 +1,119 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SplitWise Lite API - Iteration 03 (Unequal Splits)",
+    "version": "0.3.0",
+    "description": "API contract for shared expense splitting supporting Equal, Exact Amounts, and Percentage custom split modes."
+  },
+  "paths": {
+    "/api/expenses": {
+      "post": {
+        "summary": "Record a shared expense with custom split mode",
+        "operationId": "create_expense",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Expense recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Expense"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error (invalid split sum, non-existent members, negative amounts)"
+          }
+        }
+      },
+      "get": {
+        "summary": "List all recorded expenses",
+        "operationId": "get_expenses",
+        "responses": {
+          "200": {
+            "description": "List of recorded expenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Expense"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SplitMode": {
+        "type": "string",
+        "enum": ["EQUAL", "EXACT", "PERCENTAGE"]
+      },
+      "SplitShareInput": {
+        "type": "object",
+        "required": ["member_id"],
+        "properties": {
+          "member_id": { "type": "string" },
+          "amount": { "type": "number", "format": "decimal", "nullable": true },
+          "percentage": { "type": "number", "format": "decimal", "nullable": true }
+        }
+      },
+      "ExpenseCreate": {
+        "type": "object",
+        "required": ["amount", "payer_id", "participant_ids"],
+        "properties": {
+          "amount": { "type": "number", "format": "decimal" },
+          "payer_id": { "type": "string" },
+          "participant_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "split_mode": {
+            "$ref": "#/components/schemas/SplitMode",
+            "default": "EQUAL"
+          },
+          "custom_splits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SplitShareInput"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "Expense": {
+        "type": "object",
+        "required": ["id", "amount", "payer_id", "participant_ids", "split_mode", "shares", "created_at"],
+        "properties": {
+          "id": { "type": "string" },
+          "amount": { "type": "number", "format": "decimal" },
+          "payer_id": { "type": "string" },
+          "participant_ids": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "split_mode": { "$ref": "#/components/schemas/SplitMode" },
+          "shares": {
+            "type": "object",
+            "additionalProperties": { "type": "number", "format": "decimal" }
+          },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  }
+}
