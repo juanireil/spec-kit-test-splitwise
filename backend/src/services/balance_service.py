@@ -15,7 +15,7 @@ class BalanceService:
         if not participant_ids:
             raise ValueError("Participant list cannot be empty")
 
-        total_cents = int(amount * 100)
+        total_cents = int(round(amount * 100))
         n = len(participant_ids)
         base_share_cents = total_cents // n
         remainder_cents = total_cents % n
@@ -25,6 +25,34 @@ class BalanceService:
             extra_cent = 1 if index < remainder_cents else 0
             participant_cents = base_share_cents + extra_cent
             shares[participant_id] = Decimal(participant_cents) / Decimal(100)
+
+        return shares
+
+    @staticmethod
+    def split_amount_exact(
+        amount: Decimal, participant_ids: list[str], custom_shares: dict[str, Decimal]
+    ) -> dict[str, Decimal]:
+        """
+        Validates and assigns exact monetary amounts per participant.
+        Enforces non-negativity, participant completeness, and sum(shares) == amount.
+        """
+        if not participant_ids:
+            raise ValueError("Participant list cannot be empty")
+
+        shares: dict[str, Decimal] = {}
+        for p_id in participant_ids:
+            if p_id not in custom_shares:
+                raise ValueError(f"Missing exact split share for participant: {p_id}")
+            share_val = custom_shares[p_id]
+            if share_val < Decimal("0.00"):
+                raise ValueError(f"Share for member '{p_id}' cannot be negative")
+            shares[p_id] = share_val
+
+        total_shares = sum(shares.values())
+        if total_shares != amount:
+            raise ValueError(
+                f"Sum of exact split shares (${total_shares:.2f}) does not equal expense amount (${amount:.2f})"
+            )
 
         return shares
 
@@ -44,7 +72,11 @@ class BalanceService:
             if expense.payer_id in paid_map:
                 paid_map[expense.payer_id] += expense.amount
 
-            split_shares = cls.split_amount_equally(expense.amount, expense.participant_ids)
+            split_shares = (
+                expense.shares
+                if expense.shares
+                else cls.split_amount_equally(expense.amount, expense.participant_ids)
+            )
             for participant_id, share in split_shares.items():
                 if participant_id in owed_map:
                     owed_map[participant_id] += share

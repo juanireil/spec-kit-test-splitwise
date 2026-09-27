@@ -36,10 +36,10 @@
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement `split_amount_exact` validation and calculation in `backend/src/services/balance_service.py`
-- [ ] T008 [US1] Update `POST /api/expenses` endpoint in `backend/src/api/routes.py` to route and validate EXACT split requests
-- [ ] T009 [US1] Update `BalanceService.calculate_balances` in `backend/src/services/balance_service.py` to calculate net balances using stored expense `shares`
-- [ ] T010 [US1] Implement Exact Amounts split UI input rows and submission handling in `frontend/src/components/ExpenseForm.jsx`
+- [x] T007 [US1] Implement `split_amount_exact` validation and calculation in `backend/src/services/balance_service.py`
+- [x] T008 [US1] Update `POST /api/expenses` endpoint in `backend/src/api/routes.py` to route and validate EXACT split requests
+- [x] T009 [US1] Update `BalanceService.calculate_balances` in `backend/src/services/balance_service.py` to calculate net balances using stored expense `shares`
+- [x] T010 [US1] Implement Exact Amounts split UI input rows and submission handling in `frontend/src/components/ExpenseForm.jsx`
 
 **Checkpoint**: Exact amount splits can be submitted via API and UI, validated, persisted in-memory, and calculated with 100% test coverage.
 

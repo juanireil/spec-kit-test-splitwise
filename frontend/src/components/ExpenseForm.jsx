@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { PlusCircle, DollarSign, UserCheck, Users, AlertCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { PlusCircle, DollarSign, UserCheck, Users, AlertCircle, Percent, SlidersHorizontal } from 'lucide-react';
 
 export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = false }) {
   const [amount, setAmount] = useState('');
   const [payerId, setPayerId] = useState(members[0]?.id || 'alice');
   const [participantIds, setParticipantIds] = useState(members.map((m) => m.id));
+  const [splitMode, setSplitMode] = useState('EQUAL'); // EQUAL, EXACT, PERCENTAGE
+  const [customShares, setCustomShares] = useState({}); // { memberId: value_string }
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -17,22 +19,91 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
   }, [members]);
 
   const toggleParticipant = (id) => {
-    setParticipantIds((prev) => (
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
-    ));
+    setParticipantIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id];
+      return next;
+    });
   };
 
   const selectAllParticipants = () => {
     setParticipantIds(members.map((m) => m.id));
   };
 
+  const handleShareChange = (memberId, val) => {
+    setCustomShares((prev) => ({
+      ...prev,
+      [memberId]: val,
+    }));
+  };
+
+  const parsedTotalAmount = useMemo(() => {
+    const num = parseFloat(amount);
+    return isNaN(num) || num < 0 ? 0 : num;
+  }, [amount]);
+
+  // Validation calculations
+  const splitAnalysis = useMemo(() => {
+    if (splitMode === 'EQUAL') {
+      return { isValid: participantIds.length > 0, remaining: 0, totalAllocated: parsedTotalAmount };
+    }
+
+    if (splitMode === 'EXACT') {
+      let allocated = 0;
+      let allFilled = true;
+      let hasNegative = false;
+
+      participantIds.forEach((id) => {
+        const valStr = customShares[id];
+        if (valStr === undefined || valStr === '') {
+          allFilled = false;
+        } else {
+          const num = parseFloat(valStr);
+          if (isNaN(num) || num < 0) {
+            hasNegative = true;
+          } else {
+            allocated += num;
+          }
+        }
+      });
+
+      const remaining = Math.round((parsedTotalAmount - allocated) * 100) / 100;
+      const isValid = allFilled && !hasNegative && Math.abs(remaining) === 0 && parsedTotalAmount > 0;
+      return { isValid, remaining, totalAllocated: Math.round(allocated * 100) / 100, hasNegative, allFilled };
+    }
+
+    if (splitMode === 'PERCENTAGE') {
+      let allocatedPct = 0;
+      let allFilled = true;
+      let hasNegative = false;
+
+      participantIds.forEach((id) => {
+        const valStr = customShares[id];
+        if (valStr === undefined || valStr === '') {
+          allFilled = false;
+        } else {
+          const num = parseFloat(valStr);
+          if (isNaN(num) || num < 0) {
+            hasNegative = true;
+          } else {
+            allocatedPct += num;
+          }
+        }
+      });
+
+      const remainingPct = Math.round((100.0 - allocatedPct) * 100) / 100;
+      const isValid = allFilled && !hasNegative && Math.abs(remainingPct) === 0 && parsedTotalAmount > 0;
+      return { isValid, remaining: remainingPct, totalAllocated: Math.round(allocatedPct * 100) / 100, hasNegative, allFilled };
+    }
+
+    return { isValid: false, remaining: 0, totalAllocated: 0 };
+  }, [splitMode, participantIds, customShares, parsedTotalAmount]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccessMessage('');
 
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount) || parsedAmount <= 0) {
+    if (parsedTotalAmount <= 0) {
       setError('Please enter a valid positive expense amount.');
       return;
     }
@@ -47,14 +118,39 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
       return;
     }
 
+    let customSplitsPayload = null;
+
+    if (splitMode === 'EXACT') {
+      if (!splitAnalysis.isValid) {
+        setError(`Exact splits must sum to exactly $${parsedTotalAmount.toFixed(2)} (Remaining: $${splitAnalysis.remaining.toFixed(2)})`);
+        return;
+      }
+      customSplitsPayload = participantIds.map((id) => ({
+        member_id: id,
+        amount: parseFloat(customShares[id] || '0'),
+      }));
+    } else if (splitMode === 'PERCENTAGE') {
+      if (!splitAnalysis.isValid) {
+        setError(`Percentage splits must sum to exactly 100% (Remaining: ${splitAnalysis.remaining}%)`);
+        return;
+      }
+      customSplitsPayload = participantIds.map((id) => ({
+        member_id: id,
+        percentage: parseFloat(customShares[id] || '0'),
+      }));
+    }
+
     try {
       await onExpenseCreated({
-        amount: parsedAmount,
+        amount: parsedTotalAmount,
         payer_id: payerId,
         participant_ids: participantIds,
+        split_mode: splitMode,
+        custom_splits: customSplitsPayload,
       });
 
       setAmount('');
+      setCustomShares({});
       setSuccessMessage('Expense successfully recorded!');
       setTimeout(() => setSuccessMessage(''), 4000);
     } catch (err) {
@@ -70,7 +166,7 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
             <PlusCircle className="h-5 w-5 text-emerald-600" />
             Add Shared Expense
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">Split equally among chosen participants</p>
+          <p className="text-xs text-slate-500 mt-0.5">Record expenses with equal or custom splits</p>
         </div>
       </div>
 
@@ -127,12 +223,55 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
           </select>
         </div>
 
-        {/* Participants Selection */}
+        {/* Split Mode Selector Tabs */}
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
+            <SlidersHorizontal className="h-3.5 w-3.5 text-slate-400" />
+            Split Mode
+          </label>
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-xl">
+            <button
+              type="button"
+              onClick={() => setSplitMode('EQUAL')}
+              className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+                splitMode === 'EQUAL'
+                  ? 'bg-white text-emerald-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Equal (=)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSplitMode('EXACT')}
+              className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+                splitMode === 'EXACT'
+                  ? 'bg-white text-emerald-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Exact ($)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSplitMode('PERCENTAGE')}
+              className={`py-1.5 px-3 rounded-lg text-xs font-semibold transition-all ${
+                splitMode === 'PERCENTAGE'
+                  ? 'bg-white text-emerald-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Percentage (%)
+            </button>
+          </div>
+        </div>
+
+        {/* Participants Selection & Custom Split Inputs */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-xs font-semibold text-slate-700 flex items-center gap-1.5">
               <Users className="h-3.5 w-3.5 text-slate-400" />
-              Split Equally Between ({participantIds.length})
+              Participants ({participantIds.length})
             </label>
             <button
               type="button"
@@ -143,34 +282,113 @@ export function ExpenseForm({ members = [], onExpenseCreated, isSubmitting = fal
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
+          <div className="space-y-2">
             {members.map((m) => {
               const isChecked = participantIds.includes(m.id);
               return (
-                <label
+                <div
                   key={m.id}
-                  className={`flex items-center gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
+                  className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
                     isChecked
-                      ? 'bg-emerald-50/60 border-emerald-300 text-emerald-950 font-semibold'
-                      : 'bg-slate-50/60 border-slate-200 text-slate-600 hover:bg-slate-100/60'
+                      ? 'bg-emerald-50/40 border-emerald-200 text-slate-900'
+                      : 'bg-slate-50/60 border-slate-200 text-slate-500'
                   }`}
                 >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => toggleParticipant(m.id)}
-                    className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded-md"
-                  />
-                  <span className="text-xs">{m.name}</span>
-                </label>
+                  <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={() => toggleParticipant(m.id)}
+                      className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                    />
+                    <span className="text-xs font-semibold">{m.name}</span>
+                  </label>
+
+                  {/* Custom Input when checked */}
+                  {isChecked && splitMode === 'EXACT' && (
+                    <div className="relative w-28">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                        $
+                      </div>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.00"
+                        placeholder="0.00"
+                        value={customShares[m.id] || ''}
+                        onChange={(e) => handleShareChange(m.id, e.target.value)}
+                        className="w-full pl-6 pr-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-right text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                    </div>
+                  )}
+
+                  {isChecked && splitMode === 'PERCENTAGE' && (
+                    <div className="relative w-28">
+                      <div className="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none text-slate-400 text-xs">
+                        %
+                      </div>
+                      <input
+                        type="number"
+                        step="0.01"
+                        min="0.00"
+                        max="100.00"
+                        placeholder="0.00"
+                        value={customShares[m.id] || ''}
+                        onChange={(e) => handleShareChange(m.id, e.target.value)}
+                        className="w-full pl-2 pr-6 py-1 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-right text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500"
+                      />
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
         </div>
 
+        {/* Live Allocation Indicator for Custom Split Modes */}
+        {splitMode === 'EXACT' && (
+          <div
+            className={`p-3 rounded-xl border text-xs flex items-center justify-between font-medium ${
+              splitAnalysis.isValid
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : 'bg-amber-50 border-amber-200 text-amber-800'
+            }`}
+          >
+            <span>
+              Allocated: ${splitAnalysis.totalAllocated.toFixed(2)} / ${parsedTotalAmount.toFixed(2)}
+            </span>
+            <span className="font-bold">
+              {splitAnalysis.remaining === 0
+                ? '✓ 100% Balanced'
+                : splitAnalysis.remaining > 0
+                ? `$${splitAnalysis.remaining.toFixed(2)} remaining`
+                : `$${Math.abs(splitAnalysis.remaining).toFixed(2)} over-allocated`}
+            </span>
+          </div>
+        )}
+
+        {splitMode === 'PERCENTAGE' && (
+          <div
+            className={`p-3 rounded-xl border text-xs flex items-center justify-between font-medium ${
+              splitAnalysis.isValid
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                : 'bg-amber-50 border-amber-200 text-amber-800'
+            }`}
+          >
+            <span>Allocated: {splitAnalysis.totalAllocated}% / 100%</span>
+            <span className="font-bold">
+              {splitAnalysis.remaining === 0
+                ? '✓ 100% Balanced'
+                : splitAnalysis.remaining > 0
+                ? `${splitAnalysis.remaining}% remaining`
+                : `${Math.abs(splitAnalysis.remaining)}% over-allocated`}
+            </span>
+          </div>
+        )}
+
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || (splitMode !== 'EQUAL' && !splitAnalysis.isValid)}
           className="w-full mt-2 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-xl shadow-md shadow-emerald-200 hover:shadow-lg hover:shadow-emerald-200/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Recording Expense...' : 'Record & Split Expense'}
